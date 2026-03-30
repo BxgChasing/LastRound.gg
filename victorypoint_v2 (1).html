@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VictoryPoint.gg — Compete Where It Actually Counts</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Oswald:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#08080c;--bg2:#0c0c12;--bg-card:#0e0e14;--bg-card2:#111119;
+  --border:#1a1a2e;--border2:#252540;
+  --cyan:#00f0ff;--pink:#ff3e6c;--purple:#a855f7;--gold:#ffd700;
+  --green:#00e676;--red:#ff4444;--orange:#ff8c00;
+  --text:#e8e8f0;--dim:#6b6b8a;--muted:#3a3a55;
+  --font-d:'Oswald',sans-serif;--font-b:'Rajdhani',sans-serif;--font-m:'Source Code Pro',monospace;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{font-family:var(--font-b);color:var(--text);background:var(--bg);overflow-x:hidden;line-height:1.6}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--cyan);border-radius:3px}
+body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.03}
+.container{max-width:1320px;margin:0 auto;padding:0 24px}
+.glow{color:var(--cyan);text-shadow:0 0 20px rgba(0,240,255,0.4)}
+.clip{clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px))}
+.clip-sm{clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
+
+/* ═══ NAV ═══ */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(8,8,12,0.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1320px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-family:var(--font-d);font-size:1.35rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;color:var(--text);display:flex;align-items:center;gap:8px}
+.logo svg{width:28px;height:28px}
+.logo .vp{color:var(--cyan)}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{font-family:var(--font-d);font-size:.82rem;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;color:var(--dim);transition:.3s;position:relative}
+.nav-links a:hover,.nav-links a.active{color:var(--cyan)}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--cyan);transition:width .3s}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-credits{font-family:var(--font-m);font-size:.75rem;color:var(--gold);display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid rgba(255,215,0,.2);background:rgba(255,215,0,.04)}
+.nav-credits svg{width:14px;height:14px}
+.nav-vp{font-family:var(--font-m);font-size:.75rem;color:var(--cyan);display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid rgba(0,240,255,.2);background:rgba(0,240,255,.04)}
+.btn-nav{font-family:var(--font-d);font-size:.78rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:7px 18px;border:1px solid var(--cyan);color:var(--cyan);background:transparent;cursor:pointer;transition:.3s}
+.btn-nav:hover{background:var(--cyan);color:var(--bg)}
+.btn-nav.filled{background:var(--cyan);color:var(--bg);border-color:var(--cyan)}
+.btn-nav.filled:hover{background:#33f5ff}
+.mobile-toggle{display:none;background:none;border:none;color:var(--text);font-size:1.4rem;cursor:pointer}
+
+/* ═══ PAGES ═══ */
+.page{display:none}.page.active{display:block}
+.section{padding:100px 0;position:relative}
+.section-hdr{text-align:center;margin-bottom:56px}
+.section-tag{font-family:var(--font-m);font-size:.72rem;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:12px}
+.section-tag::before,.section-tag::after{content:'';width:24px;height:1px;background:var(--cyan);opacity:.4}
+.section-title{font-family:var(--font-d);font-size:clamp(1.8rem,4vw,3.2rem);font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.section-sub{color:var(--dim);max-width:560px;margin:12px auto 0;font-size:1rem}
+
+/* ═══ HERO ═══ */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding-top:60px}
+.hero-bg{position:absolute;inset:0}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,240,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.03) 1px,transparent 1px);background-size:60px 60px;animation:gp 8s ease-in-out infinite}
+@keyframes gp{0%,100%{opacity:.5}50%{opacity:1}}
+.hero-grad{position:absolute;inset:0;background:radial-gradient(800px 600px at 30% 40%,rgba(0,240,255,.07),transparent),radial-gradient(600px 500px at 70% 60%,rgba(255,62,108,.05),transparent)}
+.hero-content{position:relative;z-index:1;text-align:center;max-width:860px;margin:0 auto;padding:0 24px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-m);font-size:.72rem;color:var(--cyan);border:1px solid rgba(0,240,255,.2);padding:5px 14px;margin-bottom:28px;letter-spacing:2px;background:rgba(0,240,255,.04);animation:fiu .8s ease both}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-family:var(--font-d);font-size:clamp(2.8rem,7.5vw,6rem);font-weight:700;line-height:.95;text-transform:uppercase;margin-bottom:20px;animation:fiu .8s ease .1s both}
+.hero h1 .l2{display:block;color:var(--cyan);text-shadow:0 0 40px rgba(0,240,255,.3)}
+.hero-sub{font-size:1.1rem;color:var(--dim);max-width:540px;margin:0 auto 36px;animation:fiu .8s ease .2s both}
+.hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fiu .8s ease .3s both}
+.btn-p{font-family:var(--font-d);font-size:.95rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:13px 32px;background:var(--cyan);color:var(--bg);border:none;cursor:pointer;transition:.3s}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,240,255,.3)}
+.btn-s{font-family:var(--font-d);font-size:.95rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:13px 32px;background:transparent;color:var(--text);border:1px solid var(--border);cursor:pointer;transition:.3s}
+.btn-s:hover{border-color:var(--cyan);color:var(--cyan)}
+.hero-metrics{display:flex;justify-content:center;gap:48px;margin-top:56px;animation:fiu .8s ease .4s both}
+.hm .num{font-family:var(--font-d);font-size:2.2rem;font-weight:700}
+.hm .lbl{font-size:.75rem;color:var(--dim);letter-spacing:2px;text-transform:uppercase}
+@keyframes fiu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.scanline{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.12;animation:scan 6s linear infinite;pointer-events:none}
+@keyframes scan{from{top:0}to{top:100%}}
+
+/* ═══ HOW IT WORKS ═══ */
+.steps-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;counter-reset:s}
+.step{background:var(--bg-card);border:1px solid var(--border);padding:28px 24px;position:relative;counter-increment:s;transition:.3s}
+.step:hover{border-color:var(--cyan);transform:translateY(-3px)}
+.step::before{content:counter(s,decimal-leading-zero);font-family:var(--font-d);font-size:3rem;font-weight:700;color:rgba(255,255,255,.04);position:absolute;top:12px;right:16px;line-height:1}
+.step:hover::before{color:rgba(0,240,255,.1)}
+.step-icon{color:var(--cyan);margin-bottom:14px;width:32px;height:32px}
+.step h3{font-family:var(--font-d);font-size:1.05rem;font-weight:600;text-transform:uppercase;margin-bottom:8px}
+.step p{font-size:.85rem;color:var(--dim);line-height:1.7}
+
+/* ═══ TOURNAMENT CARDS ═══ */
+.t-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px}
+.t-card{background:var(--bg-card);border:1px solid var(--border);position:relative;overflow:hidden;transition:.4s;cursor:pointer}
+.t-card:hover{border-color:var(--cyan);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.t-card:hover .t-glow{opacity:1}
+.t-glow{position:absolute;inset:0;opacity:0;transition:.4s;pointer-events:none;background:radial-gradient(ellipse at top,rgba(0,240,255,.05),transparent 60%)}
+.t-banner{height:100px;position:relative;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:linear-gradient(135deg,rgba(0,240,255,.06),rgba(168,85,247,.06))}
+.t-banner .game-label{font-family:var(--font-d);font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:8px}
+.t-banner .game-label .emoji{font-size:1.4rem}
+.t-badge{font-family:var(--font-m);font-size:.6rem;padding:3px 8px;letter-spacing:1.5px;text-transform:uppercase;border-radius:2px}
+.badge-live{background:var(--pink);color:#fff}
+.badge-open{background:rgba(0,230,118,.12);color:var(--green);border:1px solid rgba(0,230,118,.25)}
+.badge-upcoming{background:rgba(0,240,255,.08);color:var(--cyan);border:1px solid rgba(0,240,255,.15)}
+.badge-filled{background:rgba(255,215,0,.08);color:var(--gold);border:1px solid rgba(255,215,0,.15)}
+.badge-banger{background:linear-gradient(135deg,rgba(255,140,0,.2),rgba(255,62,108,.2));color:var(--orange);border:1px solid rgba(255,140,0,.3);animation:bangerPulse 2s infinite}
+@keyframes bangerPulse{0%,100%{box-shadow:0 0 0 rgba(255,140,0,0)}50%{box-shadow:0 0 12px rgba(255,140,0,.3)}}
+.t-body{padding:20px}
+.t-title{font-family:var(--font-d);font-size:1.25rem;font-weight:600;text-transform:uppercase;margin-bottom:10px}
+.t-meta{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.t-meta-i{display:flex;align-items:center;gap:5px;font-size:.8rem;color:var(--dim)}
+.t-meta-i svg{width:12px;height:12px;opacity:.6}
+.t-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--border)}
+.t-prize{display:flex;align-items:baseline;gap:6px}
+.t-prize .amt{font-family:var(--font-d);font-size:1.6rem;font-weight:700;color:var(--gold)}
+.t-prize .fee{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.t-slots{text-align:right}
+.t-slots .bar{width:100px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:4px;margin-left:auto}
+.t-slots .bar-fill{height:100%;border-radius:2px}
+.bar-hot{background:linear-gradient(90deg,var(--pink),var(--gold))}
+.bar-warm{background:linear-gradient(90deg,var(--cyan),var(--purple))}
+.t-slots .info{font-size:.7rem;color:var(--muted)}
+.t-vp-req{display:flex;align-items:center;gap:4px;font-family:var(--font-m);font-size:.65rem;color:var(--orange);margin-top:8px}
+.t-vp-req svg{width:12px;height:12px}
+
+/* ═══ FILTERS ═══ */
+.filter-row{display:flex;gap:10px;justify-content:center;margin-bottom:40px;flex-wrap:wrap}
+.f-btn{font-family:var(--font-d);font-size:.78rem;letter-spacing:1.5px;text-transform:uppercase;padding:7px 18px;background:transparent;color:var(--dim);border:1px solid var(--border);cursor:pointer;transition:.3s}
+.f-btn.active,.f-btn:hover{background:var(--cyan);color:var(--bg);border-color:var(--cyan)}
+
+/* ═══ WAGER SECTION ═══ */
+.wager-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.wager-card{background:var(--bg-card);border:1px solid var(--border);padding:20px;transition:.3s;cursor:pointer}
+.wager-card:hover{border-color:var(--pink);transform:translateY(-2px)}
+.wager-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.wager-game{font-family:var(--font-m);font-size:.68rem;color:var(--cyan);letter-spacing:1.5px;text-transform:uppercase}
+.wager-type{font-family:var(--font-m);font-size:.65rem;color:var(--pink);padding:3px 8px;border:1px solid rgba(255,62,108,.2);background:rgba(255,62,108,.06)}
+.wager-players{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.wager-player{text-align:center;flex:1}
+.wager-player .avatar{width:40px;height:40px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:1rem;font-weight:700;margin:0 auto 6px}
+.wager-player .name{font-family:var(--font-d);font-size:.85rem;font-weight:600}
+.wager-player .elo{font-family:var(--font-m);font-size:.65rem;color:var(--dim)}
+.wager-vs{font-family:var(--font-d);font-size:1.2rem;font-weight:700;color:var(--pink)}
+.wager-stakes{text-align:center;padding-top:12px;border-top:1px solid var(--border)}
+.wager-stakes .credits{font-family:var(--font-d);font-size:1.3rem;font-weight:700;color:var(--gold)}
+.wager-stakes .lbl{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+
+/* ═══ PROFILE / DASHBOARD ═══ */
+.dash-layout{display:grid;grid-template-columns:320px 1fr;gap:24px}
+.dash-sidebar{display:flex;flex-direction:column;gap:16px}
+.profile-card-main{background:var(--bg-card);border:1px solid var(--border);padding:28px;text-align:center}
+.profile-avatar-lg{width:80px;height:80px;border-radius:8px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:2rem;font-weight:700;background:linear-gradient(135deg,rgba(0,240,255,.15),rgba(168,85,247,.15));color:var(--cyan);border:2px solid var(--cyan);position:relative}
+.rank-tier{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);font-family:var(--font-m);font-size:.6rem;padding:2px 10px;background:var(--bg);border:1px solid var(--gold);color:var(--gold);white-space:nowrap}
+.profile-name{font-family:var(--font-d);font-size:1.4rem;font-weight:700;margin-top:8px}
+.profile-tag{font-family:var(--font-m);font-size:.72rem;color:var(--dim);margin-bottom:4px}
+.profile-ids{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:12px 0}
+.profile-id{font-family:var(--font-m);font-size:.6rem;color:var(--muted);padding:3px 8px;border:1px solid var(--border);background:var(--bg)}
+.profile-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:16px;background:var(--border)}
+.ps-item{background:var(--bg-card);padding:12px 8px;text-align:center}
+.ps-item .val{font-family:var(--font-d);font-size:1.3rem;font-weight:700}
+.ps-item .lbl{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+
+/* PnL Card */
+.pnl-card{background:var(--bg-card);border:1px solid var(--border);padding:20px}
+.pnl-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.pnl-header h3{font-family:var(--font-d);font-size:.9rem;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.pnl-total{font-family:var(--font-d);font-size:1.8rem;font-weight:700}
+.pnl-total.positive{color:var(--green)}
+.pnl-total.negative{color:var(--red)}
+.pnl-breakdown{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.pnl-item{padding:10px;background:var(--bg);border:1px solid var(--border)}
+.pnl-item .label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.pnl-item .value{font-family:var(--font-d);font-size:1.1rem;font-weight:600}
+.pnl-chart{height:80px;display:flex;align-items:end;gap:3px;padding-top:8px;border-top:1px solid var(--border)}
+.pnl-bar{flex:1;border-radius:1px 1px 0 0;min-height:2px;transition:.3s}
+.pnl-bar:hover{opacity:.8}
+
+/* Trophy Cabinet */
+.trophy-card{background:var(--bg-card);border:1px solid var(--border);padding:20px}
+.trophy-card h3{font-family:var(--font-d);font-size:.9rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px}
+.trophies{display:flex;flex-wrap:wrap;gap:8px}
+.trophy{width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--bg);border:1px solid var(--border);transition:.3s;position:relative}
+.trophy:hover{border-color:var(--gold);transform:scale(1.1)}
+.trophy.earned{border-color:var(--gold);background:rgba(255,215,0,.06)}
+.trophy.locked{opacity:.3;filter:grayscale(1)}
+.trophy .trophy-tip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);font-family:var(--font-m);font-size:.6rem;color:var(--gold);white-space:nowrap;background:var(--bg);padding:3px 8px;border:1px solid var(--gold)}
+.trophy:hover .trophy-tip{display:block}
+
+/* VP Progress */
+.vp-card{background:var(--bg-card);border:1px solid var(--border);padding:20px}
+.vp-card h3{font-family:var(--font-d);font-size:.9rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;color:var(--cyan)}
+.vp-progress{margin-bottom:12px}
+.vp-bar-outer{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.vp-bar-inner{height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple));border-radius:3px;transition:width .6s}
+.vp-info{display:flex;justify-content:space-between;font-size:.72rem;color:var(--dim)}
+.vp-perks{display:flex;flex-direction:column;gap:6px}
+.vp-perk{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--dim)}
+.vp-perk.unlocked{color:var(--cyan)}
+.vp-perk .check{width:14px;height:14px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.6rem}
+.vp-perk.unlocked .check{border-color:var(--cyan);color:var(--cyan)}
+
+/* Dash Main Area */
+.dash-main{display:flex;flex-direction:column;gap:16px}
+.dash-tabs{display:flex;gap:2px;background:var(--border)}
+.dash-tab{font-family:var(--font-d);font-size:.8rem;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:10px 20px;background:var(--bg-card);color:var(--dim);border:none;cursor:pointer;transition:.3s;flex:1;text-align:center}
+.dash-tab.active{color:var(--cyan);background:var(--bg-card2)}
+.dash-content{background:var(--bg-card);border:1px solid var(--border);padding:24px;min-height:400px}
+
+/* Match History */
+.match-row{display:grid;grid-template-columns:80px 1fr 100px 80px 80px;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);font-size:.85rem}
+.match-row:last-child{border-bottom:none}
+.match-result{font-family:var(--font-d);font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.match-result.win{color:var(--green)}
+.match-result.loss{color:var(--red)}
+.match-opponent{color:var(--dim)}
+.match-pnl{font-family:var(--font-m);font-size:.8rem;font-weight:500}
+.match-pnl.pos{color:var(--green)}
+.match-pnl.neg{color:var(--red)}
+.match-date{font-family:var(--font-m);font-size:.7rem;color:var(--muted)}
+.match-game{font-family:var(--font-m);font-size:.7rem;color:var(--cyan)}
+
+/* ═══ LEADERBOARD ═══ */
+.lb-table{width:100%}
+.lb-header{display:grid;grid-template-columns:50px 1fr 100px 100px 100px 80px;gap:12px;padding:10px 16px;font-family:var(--font-m);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)}
+.lb-row{display:grid;grid-template-columns:50px 1fr 100px 100px 100px 80px;gap:12px;padding:14px 16px;align-items:center;border-bottom:1px solid var(--border);transition:.3s}
+.lb-row:hover{background:var(--bg-card2)}
+.lb-rank{font-family:var(--font-d);font-size:1.1rem;font-weight:700;text-align:center}
+.lb-rank.top1{color:var(--gold)}
+.lb-rank.top2{color:#c0c0c0}
+.lb-rank.top3{color:#cd7f32}
+.lb-player{display:flex;align-items:center;gap:10px}
+.lb-avatar{width:32px;height:32px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:.85rem;font-weight:700}
+.lb-name{font-family:var(--font-d);font-size:.9rem;font-weight:600}
+.lb-sub{font-family:var(--font-m);font-size:.65rem;color:var(--muted)}
+.lb-val{font-family:var(--font-m);font-size:.85rem;text-align:center}
+.lb-earnings{color:var(--gold)}
+.lb-vp{color:var(--cyan)}
+.lb-wr{color:var(--green)}
+
+/* ═══ COMMUNITY / CHAT ═══ */
+.comm-layout{display:grid;grid-template-columns:180px 1fr 280px;gap:0;height:580px;border:1px solid var(--border);background:var(--bg-card)}
+/* Channel Sidebar */
+.channel-sidebar{border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;background:var(--bg2)}
+.channel-sidebar-hdr{padding:14px 16px;border-bottom:1px solid var(--border);font-family:var(--font-d);font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim)}
+.channel-group{padding:12px 0}
+.channel-group-label{padding:0 16px;font-family:var(--font-m);font-size:.6rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.channel-item{display:flex;align-items:center;gap:8px;padding:7px 16px;cursor:pointer;transition:.2s;font-family:var(--font-b);font-size:.82rem;color:var(--dim);position:relative}
+.channel-item:hover{background:rgba(255,255,255,.03);color:var(--text)}
+.channel-item.active{background:rgba(0,240,255,.06);color:var(--cyan)}
+.channel-item.active::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:2px;background:var(--cyan)}
+.channel-item .ch-hash{font-family:var(--font-m);font-size:.75rem;opacity:.5}
+.channel-item .ch-count{margin-left:auto;font-family:var(--font-m);font-size:.58rem;color:var(--muted);background:var(--bg);padding:1px 6px;border-radius:8px}
+/* Chat Main */
+.chat-main{display:flex;flex-direction:column;overflow:hidden}
+.chat-header{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.chat-header h3{font-family:var(--font-d);font-size:.88rem;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.chat-header-sub{font-family:var(--font-m);font-size:.65rem;color:var(--muted)}
+.chat-online{font-family:var(--font-m);font-size:.68rem;color:var(--green);display:flex;align-items:center;gap:6px}
+.chat-online .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:10px}
+.chat-msg{display:flex;gap:8px}
+.chat-av{width:28px;height:28px;border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:.75rem;font-weight:700;cursor:pointer;transition:.2s}
+.chat-av:hover{transform:scale(1.1)}
+.chat-bubble{flex:1}
+.chat-nm{font-family:var(--font-d);font-size:.78rem;font-weight:600;margin-bottom:1px;cursor:pointer;display:inline-block;position:relative}
+.chat-nm:hover{text-decoration:underline}
+.chat-txt{font-size:.82rem;color:var(--dim);line-height:1.5}
+.chat-tm{font-family:var(--font-m);font-size:.58rem;color:var(--muted);margin-top:1px}
+.chat-input-row{padding:10px 18px;border-top:1px solid var(--border);display:flex;gap:8px}
+.chat-input{flex:1;background:var(--bg);border:1px solid var(--border);padding:9px 12px;color:var(--text);font-family:var(--font-b);font-size:.82rem;outline:none;transition:.3s}
+.chat-input:focus{border-color:var(--cyan)}
+.chat-input::placeholder{color:var(--muted)}
+.chat-send{background:var(--cyan);border:none;color:var(--bg);width:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.3s}
+.chat-send:hover{background:#33f5ff}
+/* Online Users Sidebar */
+.users-sidebar{border-left:1px solid var(--border);overflow-y:auto;background:var(--bg2)}
+.users-sidebar-hdr{padding:14px 16px;border-bottom:1px solid var(--border);font-family:var(--font-d);font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim)}
+.user-item{display:flex;align-items:center;gap:8px;padding:8px 16px;cursor:pointer;transition:.2s;position:relative}
+.user-item:hover{background:rgba(255,255,255,.03)}
+.user-item .u-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.user-item .u-dot.online{background:var(--green)}
+.user-item .u-dot.idle{background:var(--gold)}
+.user-item .u-dot.dnd{background:var(--red)}
+.user-item .u-name{font-family:var(--font-b);font-size:.8rem;color:var(--dim)}
+.user-item:hover .u-name{color:var(--text)}
+.user-item .u-game{font-family:var(--font-m);font-size:.58rem;color:var(--muted)}
+/* Hover Profile Popup */
+.profile-popup{display:none;position:fixed;z-index:1500;width:280px;background:var(--bg-card);border:1px solid var(--border);box-shadow:0 12px 40px rgba(0,0,0,.6);padding:0;pointer-events:none}
+.profile-popup.visible{display:block}
+.pp-banner{height:50px;background:linear-gradient(135deg,rgba(0,240,255,.1),rgba(168,85,247,.1));position:relative}
+.pp-avatar{width:44px;height:44px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:1.1rem;font-weight:700;position:absolute;bottom:-20px;left:16px;border:3px solid var(--bg-card)}
+.pp-body{padding:28px 16px 16px}
+.pp-name{font-family:var(--font-d);font-size:1rem;font-weight:700}
+.pp-tag{font-family:var(--font-m);font-size:.65rem;color:var(--muted);margin-bottom:8px}
+.pp-game{font-family:var(--font-m);font-size:.65rem;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.pp-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin-bottom:10px}
+.pp-stat{background:var(--bg-card);padding:8px 4px;text-align:center}
+.pp-stat .v{font-family:var(--font-d);font-size:.95rem;font-weight:700}
+.pp-stat .l{font-size:.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.pp-pnl{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--bg);border:1px solid var(--border)}
+.pp-pnl .pp-pnl-label{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.pp-pnl .pp-pnl-val{font-family:var(--font-d);font-size:1rem;font-weight:700}
+.pp-trophies{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+.pp-trophy{font-size:.85rem;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:var(--bg);border:1px solid var(--border);font-size:.7rem}
+
+/* ═══ NEWS ═══ */
+.news-layout{display:grid;grid-template-columns:280px 1fr;gap:24px}
+.news-sidebar{display:flex;flex-direction:column;gap:2px;position:sticky;top:80px;align-self:start;max-height:calc(100vh - 100px);overflow-y:auto}
+.news-cat{font-family:var(--font-d);font-size:.78rem;font-weight:500;letter-spacing:1px;text-transform:uppercase;padding:9px 16px;cursor:pointer;color:var(--dim);transition:.2s;border-left:2px solid transparent;background:transparent}
+.news-cat:hover{background:rgba(255,255,255,.02);color:var(--text)}
+.news-cat.active{color:var(--cyan);border-left-color:var(--cyan);background:rgba(0,240,255,.04)}
+.news-cat .cat-count{float:right;font-family:var(--font-m);font-size:.62rem;color:var(--muted)}
+.news-feed{display:flex;flex-direction:column;gap:16px}
+.news-card{background:var(--bg-card);border:1px solid var(--border);overflow:hidden;transition:.3s;cursor:pointer;display:grid;grid-template-columns:200px 1fr;gap:0}
+.news-card:hover{border-color:var(--cyan);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.news-card.featured{grid-template-columns:1fr;grid-template-rows:220px 1fr}
+.news-thumb{background:linear-gradient(135deg,rgba(0,240,255,.08),rgba(168,85,247,.08));display:flex;align-items:center;justify-content:center;font-size:2.5rem;position:relative;overflow:hidden;min-height:120px}
+.news-card.featured .news-thumb{min-height:220px;font-size:4rem}
+.news-thumb .news-cat-badge{position:absolute;top:10px;left:10px;font-family:var(--font-m);font-size:.58rem;padding:3px 8px;letter-spacing:1.5px;text-transform:uppercase;background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
+.news-body{padding:20px;display:flex;flex-direction:column;justify-content:center}
+.news-body .news-game-tag{font-family:var(--font-m);font-size:.65rem;color:var(--cyan);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.news-body h3{font-family:var(--font-d);font-size:1.15rem;font-weight:600;text-transform:uppercase;line-height:1.3;margin-bottom:8px}
+.news-card.featured .news-body h3{font-size:1.5rem}
+.news-body .news-excerpt{font-size:.82rem;color:var(--dim);line-height:1.6;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.news-card.featured .news-body .news-excerpt{-webkit-line-clamp:3}
+.news-body .news-meta{display:flex;gap:12px;font-family:var(--font-m);font-size:.62rem;color:var(--muted)}
+.news-body .news-tag{padding:2px 6px;border:1px solid var(--border);font-family:var(--font-m);font-size:.58rem;color:var(--dim)}
+
+/* ═══ ABOUT ═══ */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.about-text h2{font-family:var(--font-d);font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:700;text-transform:uppercase;margin-bottom:18px}
+.about-text p{color:var(--dim);margin-bottom:14px;font-size:1rem;line-height:1.8}
+.about-text .hl{color:var(--cyan);font-weight:600}
+.values-box{background:var(--bg-card);border:1px solid var(--border);padding:28px}
+.values-box .section-tag{justify-content:flex-start;margin-bottom:18px}
+.val-list{display:flex;flex-direction:column;gap:18px}
+.val-item{display:flex;gap:14px}
+.val-dot{width:8px;height:8px;margin-top:8px;flex-shrink:0;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%)}
+.val-item h4{font-family:var(--font-d);font-size:.95rem;font-weight:600;text-transform:uppercase;margin-bottom:3px}
+.val-item p{font-size:.82rem;color:var(--dim)}
+
+/* Economy Explainer */
+.econ-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:48px}
+.econ-card{background:var(--bg-card);border:1px solid var(--border);padding:24px;transition:.3s}
+.econ-card:hover{border-color:var(--cyan)}
+.econ-card h3{font-family:var(--font-d);font-size:1.05rem;font-weight:600;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.econ-card p{font-size:.85rem;color:var(--dim);line-height:1.7}
+.econ-example{margin-top:10px;padding:10px;background:var(--bg);border:1px solid var(--border);font-family:var(--font-m);font-size:.72rem;color:var(--dim);line-height:1.8}
+
+/* ═══ CTA ═══ */
+.cta{padding:100px 0;text-align:center;background:linear-gradient(to bottom,transparent,rgba(0,240,255,.03),transparent)}
+.cta h2{font-family:var(--font-d);font-size:clamp(2.2rem,5vw,3.8rem);font-weight:700;text-transform:uppercase;margin-bottom:14px}
+.cta p{color:var(--dim);font-size:1.05rem;max-width:480px;margin:0 auto 28px}
+
+/* ═══ FOOTER ═══ */
+footer{border-top:1px solid var(--border);padding:40px 0 20px;background:var(--bg)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:36px;margin-bottom:36px}
+.footer-brand .logo{margin-bottom:10px}
+.footer-brand p{font-size:.82rem;color:var(--dim);max-width:260px}
+.footer-col h4{font-family:var(--font-d);font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px}
+.footer-col a{display:block;font-size:.82rem;color:var(--dim);text-decoration:none;margin-bottom:8px;transition:.3s}
+.footer-col a:hover{color:var(--cyan)}
+.footer-bottom{border-top:1px solid var(--border);padding-top:20px;display:flex;justify-content:space-between;align-items:center;font-size:.72rem;color:var(--muted)}
+.footer-socials{display:flex;gap:14px}
+.footer-socials a{color:var(--muted);text-decoration:none;font-size:.82rem;transition:.3s}
+.footer-socials a:hover{color:var(--cyan)}
+
+/* ═══ MODAL ═══ */
+.modal-overlay{position:fixed;inset:0;background:rgba(8,8,12,.92);backdrop-filter:blur(10px);z-index:2000;display:none;align-items:center;justify-content:center;opacity:0;transition:.3s}
+.modal-overlay.show{display:flex;opacity:1}
+.modal{background:var(--bg-card);border:1px solid var(--border);padding:40px;max-width:520px;width:92%;position:relative;max-height:90vh;overflow-y:auto}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--dim);font-size:1.1rem;cursor:pointer;transition:.3s}
+.modal-close:hover{color:var(--cyan)}
+.modal h2{font-family:var(--font-d);font-size:1.6rem;font-weight:700;text-transform:uppercase;margin-bottom:6px}
+.modal .modal-sub{font-size:.88rem;color:var(--dim);margin-bottom:28px}
+.fg{margin-bottom:16px}
+.fg label{display:block;font-family:var(--font-d);font-size:.75rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;color:var(--dim)}
+.fg input,.fg select{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--font-b);font-size:.88rem;outline:none;transition:.3s}
+.fg input:focus,.fg select:focus{border-color:var(--cyan)}
+.fg input::placeholder{color:var(--muted)}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg-ids{margin-top:4px}
+.fg-ids .section-tag{justify-content:flex-start;font-size:.65rem;margin-bottom:10px}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:1024px){
+  .dash-layout{grid-template-columns:1fr}
+  .lb-header,.lb-row{grid-template-columns:40px 1fr 80px 80px 80px 60px;font-size:.75rem}
+}
+@media(max-width:900px){
+  .nav-links{display:none}
+  .mobile-toggle{display:block}
+  .nav-right .nav-credits,.nav-right .nav-vp{display:none}
+  .about-grid,.comm-layout{grid-template-columns:1fr}
+  .news-layout{grid-template-columns:1fr}
+  .news-sidebar{flex-direction:row;overflow-x:auto;position:static;max-height:none;flex-wrap:wrap;gap:4px}
+  .news-cat{white-space:nowrap;border-left:none;border-bottom:2px solid transparent;padding:6px 12px}
+  .news-cat.active{border-left:none;border-bottom-color:var(--cyan)}
+  .news-card{grid-template-columns:1fr}
+  .news-card.featured{grid-template-rows:160px 1fr}
+  .comm-layout{height:auto}
+  .channel-sidebar{flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border)}
+  .channel-sidebar-hdr{display:none}
+  .channel-group{padding:8px;display:flex;gap:4px}
+  .channel-group-label{display:none}
+  .channel-item{white-space:nowrap;padding:6px 12px}
+  .users-sidebar{display:none}
+  .t-grid{grid-template-columns:1fr}
+  .hero-metrics{gap:24px;flex-wrap:wrap}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .hero-metrics{flex-direction:column;gap:12px}
+  .footer-grid{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;gap:10px;text-align:center}
+  .fg-row{grid-template-columns:1fr}
+  .lb-header,.lb-row{grid-template-columns:30px 1fr 60px 60px}
+  .lb-header>*:nth-child(5),.lb-header>*:nth-child(6),.lb-row>*:nth-child(5),.lb-row>*:nth-child(6){display:none}
+  .match-row{grid-template-columns:60px 1fr 70px;font-size:.8rem}
+  .match-row>*:nth-child(4),.match-row>*:nth-child(5){display:none}
+  .wager-grid{grid-template-columns:1fr}
+  .profiles-grid{grid-template-columns:1fr}
+}
+.profiles-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.profile-card-sm{background:var(--bg-card);border:1px solid var(--border);padding:16px;transition:.3s;cursor:pointer}
+.profile-card-sm:hover{border-color:var(--cyan);transform:translateY(-2px)}
+.profile-card-sm .top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.profile-card-sm .av{width:36px;height:36px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:.9rem;font-weight:700;position:relative}
+.profile-card-sm .rnk{position:absolute;bottom:-3px;right:-3px;font-size:.5rem;font-family:var(--font-m);padding:1px 4px;background:var(--bg);border:1px solid var(--border)}
+.profile-card-sm .nm{font-family:var(--font-d);font-size:.88rem;font-weight:600}
+.profile-card-sm .tg{font-family:var(--font-m);font-size:.62rem;color:var(--muted)}
+.profile-card-sm .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}
+.profile-card-sm .st-v{font-family:var(--font-d);font-size:1rem;font-weight:700}
+.profile-card-sm .st-l{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo" onclick="showPage('home')">
+      <svg viewBox="0 0 32 32" fill="none"><path d="M16 2L28 10V22L16 30L4 22V10L16 2Z" stroke="var(--cyan)" stroke-width="1.5" fill="none"/><path d="M16 8L22 12V20L16 24L10 20V12L16 8Z" fill="var(--cyan)" opacity=".3"/><path d="M12 18L16 12L20 18" stroke="var(--cyan)" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      VICTORY<span class="vp">POINT</span>.GG
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#" class="active" data-page="home" onclick="showPage('home')">Home</a>
+      <a href="#" data-page="tournaments" onclick="showPage('tournaments')">Tournaments</a>
+      <a href="#" data-page="wager" onclick="showPage('wager')">Wager</a>
+      <a href="#" data-page="leaderboard" onclick="showPage('leaderboard')">Leaderboard</a>
+      <a href="#" data-page="news" onclick="showPage('news')">News</a>
+      <a href="#" data-page="community" onclick="showPage('community')">Community</a>
+      <a href="#" data-page="profile" onclick="showPage('profile')">Profile</a>
+      <a href="#" data-page="about" onclick="showPage('about')">About</a>
+    </div>
+    <div class="nav-right">
+      <div class="nav-credits">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10h8M8 14h8"/></svg>
+        4,200 CR
+      </div>
+      <div class="nav-vp">⚡ 1,850 VP</div>
+      <button class="btn-nav filled" onclick="openModal('signup')">Sign Up</button>
+      <button class="mobile-toggle" onclick="toggleMobile()">☰</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ HOME ═══════════════════════ -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-bg"><div class="hero-grid"></div><div class="hero-grad"></div></div>
+    <div class="scanline"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><span class="dot"></span>SEASON 01 — NOW LIVE</div>
+      <h1>Compete Where It<span class="l2">Actually Counts</span></h1>
+      <p class="hero-sub">Buy in with credits. Compete in structured brackets. Earn cash prizes, trophy badges, and Victory Points to unlock elite BANGER tournaments.</p>
+      <div class="hero-actions">
+        <button class="btn-p clip" onclick="showPage('tournaments')">Browse Events</button>
+        <button class="btn-s clip" onclick="openModal('signup')">Create Profile</button>
+      </div>
+      <div class="hero-metrics">
+        <div class="hm"><div class="num" style="color:var(--gold)">$47K+</div><div class="lbl">Total Prize Pools</div></div>
+        <div class="hm"><div class="num" style="color:var(--cyan)">312</div><div class="lbl">Active Players</div></div>
+        <div class="hm"><div class="num" style="color:var(--green)">$1.2K</div><div class="lbl">Avg Winner Payout</div></div>
+        <div class="hm"><div class="num" style="color:var(--pink)">3</div><div class="lbl">BANGER Events</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section">
+    <div class="container">
+      <div class="section-hdr">
+        <div class="section-tag">System</div>
+        <h2 class="section-title">How <span class="glow">VictoryPoint</span> Works</h2>
+        <p class="section-sub">A competitive economy where every match has real stakes.</p>
+      </div>
+      <div class="steps-row">
+        <div class="step clip-sm">
+          <svg class="step-icon" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="1.5"/><path d="M16 8V16L22 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <h3>Deposit → Credits</h3>
+          <p>Load your account with credits. $20 = 2,000 credits. Credits fuel your entries, wagers, and tournament buy-ins.</p>
+        </div>
+        <div class="step clip-sm">
+          <svg class="step-icon" viewBox="0 0 32 32" fill="none"><rect x="4" y="4" width="24" height="24" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <h3>Enter & Compete</h3>
+          <p>Join daily tournaments, scheduled high-stakes events, or instant wager matches. Real buy-ins mean real competition.</p>
+        </div>
+        <div class="step clip-sm">
+          <svg class="step-icon" viewBox="0 0 32 32" fill="none"><polygon points="16,4 28,24 4,24" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="16" cy="18" r="2" fill="currentColor"/></svg>
+          <h3>Earn VP & Climb</h3>
+          <p>Every match earns Victory Points. Hit VP thresholds to unlock BANGER tournaments — the highest-stakes events on the platform.</p>
+        </div>
+        <div class="step clip-sm">
+          <svg class="step-icon" viewBox="0 0 32 32" fill="none"><path d="M16 4L20 12H28L22 18L24 26L16 21L8 26L10 18L4 12H12L16 4Z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          <h3>Cash Out & Flex</h3>
+          <p>Withdraw earnings, track your lifetime PnL, collect trophy badges, and build a profile that proves your results.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED TOURNAMENTS -->
+  <section class="section" style="background:linear-gradient(to bottom,rgba(0,240,255,.015),transparent,rgba(255,62,108,.015))">
+    <div class="container">
+      <div class="section-hdr">
+        <div class="section-tag">Featured</div>
+        <h2 class="section-title">Upcoming <span class="glow">Events</span></h2>
+        <p class="section-sub">Limited entry. Once they fill, they're sealed.</p>
+      </div>
+      <div class="t-grid" id="feat-t"></div>
+    </div>
+  </section>
+
+  <!-- ECONOMY EXPLAINER -->
+  <section class="section">
+    <div class="container">
+      <div class="section-hdr">
+        <div class="section-tag">Economy</div>
+        <h2 class="section-title">The <span class="glow">VP</span> System</h2>
+        <p class="section-sub">Your competitive currency. Earn it, spend it, flex it.</p>
+      </div>
+      <div class="econ-cards">
+        <div class="econ-card clip-sm">
+          <h3><span style="color:var(--gold)">💳</span> Credits</h3>
+          <p>Deposit real money and convert to platform credits. Credits are used to enter tournaments and place wagers.</p>
+          <div class="econ-example">$20.00 → 2,000 Credits<br>Tournament entry: 500–2,000 CR<br>Wager match: 100–5,000 CR</div>
+        </div>
+        <div class="econ-card clip-sm">
+          <h3><span style="color:var(--cyan)">⚡</span> Victory Points</h3>
+          <p>Earned by playing matches, winning tournaments, and hitting streaks. VP unlocks elite events, badges, and leaderboard placement.</p>
+          <div class="econ-example">Match played: +10 VP<br>Tournament win: +100–500 VP<br>3-win streak: +50 VP bonus</div>
+        </div>
+        <div class="econ-card clip-sm">
+          <h3><span style="color:var(--orange)">🔥</span> BANGER Events</h3>
+          <p>The pinnacle. VP-gated, invite-only tournaments with $1K–$2K+ prize pools. Streamed, promoted, legendary.</p>
+          <div class="econ-example">Required: 2,000+ VP<br>Entry: 2,000–5,000 CR<br>Prize pool: $1,000 – $2,000+</div>
+        </div>
+        <div class="econ-card clip-sm">
+          <h3><span style="color:var(--green)">📊</span> PnL Tracking</h3>
+          <p>Every credit in, every credit out. Your lifetime earnings, total spent, and net profit/loss — tracked and graphed on your profile.</p>
+          <div class="econ-example">Lifetime earned: $2,400<br>Total spent: $1,600<br>Net PnL: <span style="color:var(--green)">+$800</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container">
+      <h2>Don't Just Play.<br><span class="glow">Prove It.</span></h2>
+      <p>Create your profile. Deposit credits. Enter your first tournament. Your PnL starts at zero — where you take it is on you.</p>
+      <button class="btn-p clip" onclick="openModal('signup')">Join VictoryPoint</button>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════ TOURNAMENTS ═══════════════════════ -->
+<div id="page-tournaments" class="page">
+  <section class="section" style="padding-top:140px">
+    <div class="container">
+      <div class="section-hdr">
+        <div class="section-tag">All Events</div>
+        <h2 class="section-title">Tournament <span class="glow">Board</span></h2>
+        <p class="section-sub">Daily events, high-stakes brackets, and VP-gated BANGER tournaments.</p>
+      </div>
+      <div class="filter-row" id="filterRow"></div>
+      <div class="t-grid" id="all-t"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════ WAGER ═══════════════════════ -->
+<div id="page-wager" class="page">
+  <section class="section" style="padding-top:140px">
+    <div class="container">
+      <div class="section-hdr">
+        <div class="section-tag">Instant</div>
+        <h2 class="section-title">Wager <span class="glow">Matches</span></h2>
+        <p class="section-sub">1v1 and 2v2 instant matchmaking. Set your own stakes.</p>
+      </div>
+      <div class="wager-grid" id="wager-grid"></div>
+      <div style="text-align:center;margin-top:40px">
+        <button class="btn-p clip" onclick="openModal('wager')">Create Wager Match</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════ LEADERBOARD ═══════════════════════ -->
+<div id="page-leaderboard" class="page">
+  <section class="section" style="padding-top:140px">
+    <div class="container">
+      <div class="section-hdr">
+        <div class="section-tag">Rankings</div>
+        <h2 class="section-title">Global <span class="glow">Leaderboard</span></h2>
+        <p class="section-sub">Ranked by earnings, Victory Points, and win rate.</p>
+      </div>
+      <div class="filter-row">
+        <button class="f-btn active" onclick="setLbFilter('earnings',this)">Earnings</button>
+        <button class="f-btn" onclick="setLbFilter('vp',this)">Victory Points</button>
+        <button class="f-btn" onclick="setLbFilter('wr',this)">Win Rate</button>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);overflow-x:auto">
+        <div class="lb-header">
+          <div>#</div><div>Player</div><div>Earnings</div><div>VP</div><div>W/L</div><div>Win %</div>
+        </div>
+        <div id="lb-body"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════ NEWS ═══════════════════════ -->
+<div id="page-news" class="page">
+  <section class="section" style="padding-top:140px">
+    <div class="container">
+      <div class="section-hdr">
+        <div class="section-tag">Intel</div>
+        <h2 class="section-title">Esports <span class="glow">News</span></h2>
+        <p class="section-sub">Tournament announcements, roster moves, drama, and competitive intel across every game on the platform.</p>
+      </div>
+      <div class="news-layout">
+        <div class="news-sidebar" id="newsSidebar"></div>
+        <div class="news-feed" id="newsFeed"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════ COMMUNITY ═══════════════════════ -->
+<div id="page-community" class="page">
+  <section class="section" style="padding-top:140px">
+    <div class="container">
+      <div class="section-hdr">
+        <div class="section-tag">Social</div>
+        <h2 class="section-title">The <span class="glow">Arena</span> Lobby</h2>
+        <p class="section-sub">Game-specific channels. Hover any player to see their stats.</p>
+      </div>
+      <div class="comm-layout">
+        <!-- Channel Sidebar -->
+        <div class="channel-sidebar">
+          <div class="channel-sidebar-hdr">Channels</div>
+          <div class="channel-group">
+            <div class="channel-group-label">General</div>
+            <div class="channel-item active" onclick="switchChannel('general')"><span class="ch-hash">#</span> general <span class="ch-count">47</span></div>
+            <div class="channel-item" onclick="switchChannel('lfg')"><span class="ch-hash">#</span> looking-for-group <span class="ch-count">12</span></div>
+          </div>
+          <div class="channel-group">
+            <div class="channel-group-label">Games</div>
+            <div class="channel-item" onclick="switchChannel('cod')"><span class="ch-hash">#</span> call-of-duty <span class="ch-count">31</span></div>
+            <div class="channel-item" onclick="switchChannel('rl')"><span class="ch-hash">#</span> rocket-league <span class="ch-count">18</span></div>
+            <div class="channel-item" onclick="switchChannel('gow')"><span class="ch-hash">#</span> gears-of-war <span class="ch-count">9</span></div>
+            <div class="channel-item" onclick="switchChannel('tekken')"><span class="ch-hash">#</span> tekken-8 <span class="ch-count">14</span></div>
+            <div class="channel-item" onclick="switchChannel('sf6')"><span class="ch-hash">#</span> street-fighter-6 <span class="ch-count">8</span></div>
+            <div class="channel-item" onclick="switchChannel('val')"><span class="ch-hash">#</span> valorant <span class="ch-count">22</span></div>
+          </div>
+        </div>
+
+        <!-- Chat Main -->
+        <div class="chat-main">
+          <div class="chat-header">
+            <div>
+              <h3 id="chatChannelName"># general</h3>
+              <div class="chat-header-sub" id="chatChannelDesc">Platform-wide chat — talk strategy, flex wins, find opponents</div>
+            </div>
+            <div class="chat-online"><span class="dot"></span> <span id="chatOnlineCount">47</span> Online</div>
+          </div>
+          <div class="chat-msgs" id="chatMsgs"></div>
+          <div class="chat-input-row">
+            <input class="chat-input" type="text" placeholder="Message #general..." id="chatInput" onkeydown="if(event.key==='Enter')sendChat()">
+            <button class="chat-send" onclick="sendChat()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+
+        <!-- Online Users Sidebar -->
+        <div class="users-sidebar">
+          <div class="users-sidebar-hdr">Online — <span id="usersOnlineCount">12</span></div>
+          <div id="usersList"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════ PROFILE ═══════════════════════ -->
+<div id="page-profile" class="page">
+  <section class="section" style="padding-top:140px">
+    <div class="container">
+      <div class="dash-layout">
+        <!-- Sidebar -->
+        <div class="dash-sidebar">
+          <div class="profile-card-main clip-sm">
+            <div class="profile-avatar-lg">CD<div class="rank-tier">DIAMOND III</div></div>
+            <div class="profile-name">CDawg</div>
+            <div class="profile-tag">@cdawg · NA East</div>
+            <div class="profile-ids">
+              <span class="profile-id">🎮 Xbox: CDawg420</span>
+              <span class="profile-id">🖥️ Steam: cdawg</span>
+              <span class="profile-id">🎯 Activision: CDawg#1337</span>
+            </div>
+            <div class="profile-stats-row">
+              <div class="ps-item"><div class="val" style="color:var(--green)">47</div><div class="lbl">Wins</div></div>
+              <div class="ps-item"><div class="val" style="color:var(--pink)">18</div><div class="lbl">Losses</div></div>
+              <div class="ps-item"><div class="val" style="color:var(--cyan)">72%</div><div class="lbl">Win Rate</div></div>
+            </div>
+          </div>
+
+          <!-- PnL -->
+          <div class="pnl-card clip-sm">
+            <div class="pnl-header">
+              <h3>PnL Overview</h3>
+              <div class="pnl-total positive">+$812</div>
+            </div>
+            <div class="pnl-breakdown">
+              <div class="pnl-item"><div class="label">Total Earned</div><div class="value" style="color:var(--green)">$2,412</div></div>
+              <div class="pnl-item"><div class="label">Total Spent</div><div class="value" style="color:var(--pink)">$1,600</div></div>
+            </div>
+            <div class="pnl-chart" id="pnlChart"></div>
+          </div>
+
+          <!-- VP Progress -->
+          <div class="vp-card clip-sm">
+            <h3>⚡ Victory Points</h3>
+            <div class="vp-progress">
+              <div class="vp-bar-outer"><div class="vp-bar-inner" style="width:74%"></div></div>
+              <div class="vp-info"><span>1,850 VP</span><span>2,500 VP (Next Tier)</span></div>
+            </div>
+            <div class="vp-perks">
+              <div class="vp-perk unlocked"><div class="check">✓</div> Profile cosmetics unlocked</div>
+              <div class="vp-perk unlocked"><div class="check">✓</div> Weekly leaderboard eligible</div>
+              <div class="vp-perk unlocked"><div class="check">✓</div> BANGER: Silver tier access</div>
+              <div class="vp-perk"><div class="check">—</div> BANGER: Gold tier access (2,500 VP)</div>
+              <div class="vp-perk"><div class="check">—</div> Invite-only events (5,000 VP)</div>
+            </div>
+          </div>
+
+          <!-- Trophies -->
+          <div class="trophy-card clip-sm">
+            <h3>🏆 Trophy Cabinet</h3>
+            <div class="trophies">
+              <div class="trophy earned"><span class="trophy-tip">First Win</span>🥇</div>
+              <div class="trophy earned"><span class="trophy-tip">10 Wins</span>⚔️</div>
+              <div class="trophy earned"><span class="trophy-tip">5 Win Streak</span>🔥</div>
+              <div class="trophy earned"><span class="trophy-tip">$1K Earned</span>💰</div>
+              <div class="trophy earned"><span class="trophy-tip">Tournament Win</span>🏆</div>
+              <div class="trophy earned"><span class="trophy-tip">BANGER Entrant</span>💎</div>
+              <div class="trophy locked"><span class="trophy-tip">$5K Earned</span>👑</div>
+              <div class="trophy locked"><span class="trophy-tip">BANGER Winner</span>🌟</div>
+              <div class="trophy locked"><span class="trophy-tip">Season Champion</span>🏅</div>
+              <div class="trophy locked"><span class="trophy-tip">100 Wins</span>💀</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="dash-main">
+          <div class="dash-tabs">
+            <button class="dash-tab active" onclick="setDashTab('history',this)">Match History</button>
+            <button class="dash-tab" onclick="setDashTab('active',this)">Active Events</button>
+            <button class="dash-tab" onclick="setDashTab('report',this)">Report Match</button>
+          </div>
+          <div class="dash-content" id="dashContent"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════ ABOUT ═══════════════════════ -->
+<div id="page-about" class="page">
+  <section class="section" style="padding-top:140px">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text">
+          <div class="section-tag" style="justify-content:flex-start;margin-bottom:14px">Manifesto</div>
+          <h2>We're Not Building <span class="glow">Another Battlefy</span></h2>
+          <p>The competitive gaming space is flooded with platforms that optimize for volume — endless low-stakes brackets, ghost entries, and forgettable matches. <span class="hl">VictoryPoint exists because competition should feel rare, valuable, and real.</span></p>
+          <p>Every tournament is designed with intentionality. <span class="hl">Credits ensure commitment.</span> Limited entries create tension. Structured formats build narratives worth watching <em>and</em> playing.</p>
+          <p>We focus on <span class="hl">underserved competitive games</span> — the fighters, tactical shooters, and legacy titles that have passionate communities but no platform that takes them seriously.</p>
+          <p>Your PnL is public. Your trophies are earned. Your Victory Points unlock the biggest stages. <span class="hl">We're not trying to be the biggest — we're building the one that matters.</span></p>
+        </div>
+        <div>
+          <div class="values-box clip-sm">
+            <div class="section-tag">Principles</div>
+            <div class="val-list">
+              <div class="val-item"><div class="val-dot" style="background:var(--cyan)"></div><div><h4>Skin in the Game</h4><p>Credit buy-ins filter out casual entries. Every match has real stakes, real consequences.</p></div></div>
+              <div class="val-item"><div class="val-dot" style="background:var(--pink)"></div><div><h4>Scarcity Over Scale</h4><p>Fewer events, bigger payoffs. Every tournament feels like an occasion, not content churn.</p></div></div>
+              <div class="val-item"><div class="val-dot" style="background:var(--purple)"></div><div><h4>Transparency First</h4><p>Public PnL, verified results, dispute resolution. Trust is the product.</p></div></div>
+              <div class="val-item"><div class="val-dot" style="background:var(--gold)"></div><div><h4>Earn Your Stage</h4><p>BANGER events aren't bought — they're earned through VP. The best players get the biggest stages.</p></div></div>
+              <div class="val-item"><div class="val-dot" style="background:var(--green)"></div><div><h4>Underserved First</h4><p>CoD, Rocket League, Gears of War, fighters — communities with passion but no real platform.</p></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo" onclick="showPage('home')"><svg viewBox="0 0 32 32" fill="none" style="width:24px;height:24px"><path d="M16 2L28 10V22L16 30L4 22V10L16 2Z" stroke="var(--cyan)" stroke-width="1.5" fill="none"/><path d="M16 8L22 12V20L16 24L10 20V12L16 8Z" fill="var(--cyan)" opacity=".3"/><path d="M12 18L16 12L20 18" stroke="var(--cyan)" stroke-width="2" fill="none" stroke-linecap="round"/></svg> VICTORY<span class="vp">POINT</span>.GG</a>
+        <p>A high-stakes competitive gaming platform where players don't just play — they invest, compete, and prove it with real results.</p>
+      </div>
+      <div class="footer-col"><h4>Platform</h4><a href="#" onclick="showPage('tournaments')">Tournaments</a><a href="#" onclick="showPage('wager')">Wager Matches</a><a href="#" onclick="showPage('leaderboard')">Leaderboards</a><a href="#" onclick="showPage('news')">News</a><a href="#">Rules</a></div>
+      <div class="footer-col"><h4>Company</h4><a href="#" onclick="showPage('about')">About</a><a href="#">Careers</a><a href="#">Press</a><a href="#">Contact</a></div>
+      <div class="footer-col"><h4>Legal</h4><a href="#">Terms of Service</a><a href="#">Privacy Policy</a><a href="#">Fair Play Policy</a><a href="#">Refund Policy</a></div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 VictoryPoint.gg — All rights reserved</span>
+      <div class="footer-socials"><a href="#">Discord</a><a href="#">Twitter/X</a><a href="#">Twitch</a><a href="#">YouTube</a></div>
+    </div>
+  </div>
+</footer>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-signup">
+  <div class="modal clip">
+    <button class="modal-close" onclick="closeModal('signup')">✕</button>
+    <h2>Create Your <span class="glow">Profile</span></h2>
+    <p class="modal-sub">Link your accounts. Your competitive legacy starts here.</p>
+    <div class="fg-row">
+      <div class="fg"><label>Gamertag</label><input type="text" placeholder="Your handle"></div>
+      <div class="fg"><label>Display Name</label><input type="text" placeholder="Name or alias"></div>
+    </div>
+    <div class="fg"><label>Email</label><input type="email" placeholder="you@example.com"></div>
+    <div class="fg"><label>Region</label><select><option value="">Select region</option><option>NA East</option><option>NA West</option><option>EU West</option><option>EU East</option><option>Asia Pacific</option><option>South America</option></select></div>
+    <div class="fg-ids">
+      <div class="section-tag" style="justify-content:flex-start;font-size:.65rem;margin-bottom:10px">Link Accounts</div>
+      <div class="fg-row"><div class="fg"><label>Xbox Gamertag</label><input type="text" placeholder="Optional"></div><div class="fg"><label>PSN ID</label><input type="text" placeholder="Optional"></div></div>
+      <div class="fg-row"><div class="fg"><label>Steam</label><input type="text" placeholder="Optional"></div><div class="fg"><label>Activision ID</label><input type="text" placeholder="Optional"></div></div>
+    </div>
+    <div class="fg"><label>Primary Game</label><select id="gameSelect"></select></div>
+    <button class="btn-p clip" style="width:100%;margin-top:8px" onclick="closeModal('signup')">Create Profile</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-wager">
+  <div class="modal clip">
+    <button class="modal-close" onclick="closeModal('wager')">✕</button>
+    <h2>Create <span class="glow">Wager</span> Match</h2>
+    <p class="modal-sub">Set your game, mode, and stakes. Your opponent must accept.</p>
+    <div class="fg"><label>Game</label><select id="wagerGameSelect"></select></div>
+    <div class="fg-row">
+      <div class="fg"><label>Match Type</label><select><option>1v1</option><option>2v2</option><option>3v3</option></select></div>
+      <div class="fg"><label>Best Of</label><select><option>BO1</option><option>BO3</option><option>BO5</option></select></div>
+    </div>
+    <div class="fg"><label>Wager Amount (Credits)</label><input type="number" placeholder="500" min="100" step="100"></div>
+    <div class="fg"><label>Notes / Rules</label><input type="text" placeholder="Map pick, restrictions, etc."></div>
+    <button class="btn-p clip" style="width:100%;margin-top:8px" onclick="closeModal('wager')">Post Wager</button>
+  </div>
+</div>
+
+<script>
+// ═══ DATA ═══
+const tournaments=[
+  {id:1,game:"Call of Duty",title:"Warzone Wipeout Classic",status:"live",icon:"🎮",prize:3000,buyIn:500,entrants:32,max:32,date:"Mar 29",format:"Single Elim BO3",region:"NA East",banger:false},
+  {id:2,game:"Rocket League",title:"Aerial Supremacy Cup",status:"open",icon:"🚀",prize:2000,buyIn:300,entrants:12,max:16,date:"Apr 5",format:"Double Elim",region:"NA",banger:false},
+  {id:3,game:"Gears of War",title:"Chainsaw Invitational",status:"open",icon:"⚔️",prize:2500,buyIn:400,entrants:6,max:8,date:"Apr 12",format:"Round Robin",region:"NA East",banger:false},
+  {id:4,game:"Call of Duty",title:"🔥 BANGER: The Gauntlet",status:"open",icon:"💀",prize:5000,buyIn:2000,entrants:10,max:16,date:"Apr 19",format:"Swiss → Top 8",region:"Global",banger:true,vpReq:2000},
+  {id:5,game:"Tekken 8",title:"Iron Throne Invitational",status:"upcoming",icon:"👊",prize:3500,buyIn:600,entrants:0,max:24,date:"Apr 26",format:"Pools → Bracket",region:"NA",banger:false},
+  {id:6,game:"Valorant",title:"Phantom Protocol",status:"upcoming",icon:"🎯",prize:4000,buyIn:800,entrants:0,max:10,date:"May 3",format:"BO3 Swiss",region:"EU West",banger:false},
+  {id:7,game:"Call of Duty",title:"🔥 BANGER: Last Man Standing",status:"upcoming",icon:"🏆",prize:10000,buyIn:5000,entrants:0,max:8,date:"May 17",format:"BO5 Elim",region:"Global",banger:true,vpReq:5000},
+  {id:8,game:"Rocket League",title:"Daily Grind #47",status:"open",icon:"⚡",prize:500,buyIn:100,entrants:14,max:16,date:"Mar 30",format:"Single Elim",region:"NA",banger:false},
+  {id:9,game:"Gears of War",title:"Lancer Legacy Open",status:"filled",icon:"🔫",prize:1500,buyIn:250,entrants:8,max:8,date:"Mar 31",format:"Double Elim",region:"NA East",banger:false},
+  {id:10,game:"Street Fighter 6",title:"🔥 BANGER: Dragon Punch Royale",status:"open",icon:"🐉",prize:7500,buyIn:3000,entrants:6,max:8,date:"Jun 1",format:"BO5 Double Elim",region:"Global",banger:true,vpReq:3000},
+];
+
+const wagers=[
+  {game:"Call of Duty",type:"1v1",p1:{name:"GhostRider",elo:1420,color:"var(--cyan)"},p2:{name:"Waiting...",elo:"—",color:"var(--muted)"},credits:1000,status:"open"},
+  {game:"Rocket League",type:"2v2",p1:{name:"AerialAce",elo:1380,color:"var(--pink)"},p2:{name:"BoostKing",elo:1350,color:"var(--purple)"},credits:500,status:"matched"},
+  {game:"Tekken 8",type:"1v1",p1:{name:"ZeroLatency",elo:1560,color:"var(--gold)"},p2:{name:"NovaCrush",elo:1490,color:"var(--purple)"},credits:2000,status:"live"},
+  {game:"Gears of War",type:"1v1",p1:{name:"ChainSawKing",elo:1300,color:"var(--green)"},p2:{name:"Waiting...",elo:"—",color:"var(--muted)"},credits:750,status:"open"},
+  {game:"Call of Duty",type:"1v1",p1:{name:"KillSwitch99",elo:1480,color:"var(--pink)"},p2:{name:"VoidWalker",elo:1440,color:"var(--gold)"},credits:1500,status:"live"},
+  {game:"Rocket League",type:"1v1",p1:{name:"FreestyleKid",elo:1220,color:"var(--cyan)"},p2:{name:"Waiting...",elo:"—",color:"var(--muted)"},credits:300,status:"open"},
+];
+
+const players=[
+  {name:"ZeroLatency",tag:"@zero",game:"Tekken 8",w:47,l:12,earnings:4800,vp:3200,color:"var(--cyan)"},
+  {name:"KillSwitch99",tag:"@ks99",game:"Call of Duty",w:41,l:15,earnings:4200,vp:2900,color:"var(--pink)"},
+  {name:"NovaCrush",tag:"@nova",game:"GG Strive",w:38,l:9,earnings:3600,vp:2700,color:"var(--purple)"},
+  {name:"VoidWalker",tag:"@void",game:"Rocket League",w:35,l:14,earnings:3100,vp:2400,color:"var(--gold)"},
+  {name:"CDawg",tag:"@cdawg",game:"Call of Duty",w:47,l:18,earnings:2412,vp:1850,color:"var(--green)"},
+  {name:"RektByDesign",tag:"@rekt",game:"Gears of War",w:29,l:11,earnings:2100,vp:1600,color:"var(--orange)"},
+  {name:"PhantomEdge",tag:"@phantom",game:"Valorant",w:26,l:10,earnings:1900,vp:1400,color:"var(--cyan)"},
+  {name:"ChainSawKing",tag:"@chainsaw",game:"Gears of War",w:22,l:8,earnings:1700,vp:1200,color:"var(--pink)"},
+  {name:"AerialAce",tag:"@aerial",game:"Rocket League",w:20,l:12,earnings:1400,vp:1100,color:"var(--purple)"},
+  {name:"GhostRider",tag:"@ghost",game:"Call of Duty",w:18,l:9,earnings:1200,vp:900,color:"var(--gold)"},
+];
+
+const matchHistory=[
+  {result:"win",game:"Call of Duty",opp:"KillSwitch99",event:"Warzone Wipeout #12",pnl:"+$120",date:"Mar 28"},
+  {result:"win",game:"Call of Duty",opp:"GhostRider",event:"Wager Match 1v1",pnl:"+$50",date:"Mar 27"},
+  {result:"loss",game:"Rocket League",opp:"AerialAce",event:"Aerial Supremacy Q",pnl:"-$30",date:"Mar 26"},
+  {result:"win",game:"Call of Duty",opp:"PhantomEdge",event:"Daily Grind #45",pnl:"+$25",date:"Mar 25"},
+  {result:"win",game:"Gears of War",opp:"ChainSawKing",event:"Lancer Legacy Open",pnl:"+$80",date:"Mar 24"},
+  {result:"loss",game:"Call of Duty",opp:"ZeroLatency",event:"Wager Match 1v1",pnl:"-$100",date:"Mar 23"},
+  {result:"win",game:"Call of Duty",opp:"RektByDesign",event:"Daily Grind #44",pnl:"+$25",date:"Mar 22"},
+  {result:"win",game:"Call of Duty",opp:"VoidWalker",event:"Warzone Wipeout #11",pnl:"+$120",date:"Mar 21"},
+];
+
+const channelMessages={
+  general:[
+    {name:"ZeroLatency",color:"var(--cyan)",text:"Anyone grinding the Warzone Wipeout tonight? Need a duo for the 2v2 wagers after.",time:"2:34 PM"},
+    {name:"KillSwitch99",color:"var(--pink)",text:"Just signed up for The Gauntlet BANGER. $5K pot. Let's go.",time:"2:36 PM"},
+    {name:"NovaCrush",color:"var(--purple)",text:"GGs to everyone in the Gears qualifier. That finals match was insane 🔥",time:"2:38 PM"},
+    {name:"VoidWalker",color:"var(--gold)",text:"When's the next Rocket League daily dropping? The last one filled in 2 hours",time:"2:41 PM"},
+    {name:"CDawg",color:"var(--green)",text:"My PnL just crossed +$800 this month. Credits system is addicting ngl",time:"2:43 PM"},
+    {name:"RektByDesign",color:"var(--orange)",text:"Rumor is there's a $10K BANGER: Last Man Standing coming. 8 players only. Need 5K VP to enter 💀",time:"2:45 PM"},
+  ],
+  lfg:[
+    {name:"GhostRider",color:"var(--gold)",text:"LFG CoD Warzone duos — NAE, 1400+ ELO preferred. Wager or tourney.",time:"1:50 PM"},
+    {name:"AerialAce",color:"var(--purple)",text:"Need a 2v2 Rocket League partner for the Aerial Supremacy Cup. Must know air dribbles.",time:"2:02 PM"},
+    {name:"CDawg",color:"var(--green)",text:"Looking for a Gears squad for the Chainsaw Invitational. Serious players only.",time:"2:15 PM"},
+    {name:"PhantomEdge",color:"var(--cyan)",text:"Val player here — anyone forming a stack for the Phantom Protocol Cup?",time:"2:30 PM"},
+  ],
+  cod:[
+    {name:"KillSwitch99",color:"var(--pink)",text:"Rebirth is the move for warming up before tourneys. Change my mind.",time:"1:20 PM"},
+    {name:"CDawg",color:"var(--green)",text:"What loadout are you guys running for the Wipeout? I'm torn between the RAM and the MCW.",time:"1:35 PM"},
+    {name:"GhostRider",color:"var(--gold)",text:"MCW is the meta right now. Trust. Also run ghost for final circles.",time:"1:38 PM"},
+    {name:"KillSwitch99",color:"var(--pink)",text:"Whoever I matched in the Daily Grind yesterday — GGs. That gulag was filthy.",time:"2:10 PM"},
+    {name:"CDawg",color:"var(--green)",text:"Just placed top 4 in the last Wipeout. Payout was clean. $120 profit on a 500 CR entry 💰",time:"2:44 PM"},
+  ],
+  rl:[
+    {name:"VoidWalker",color:"var(--gold)",text:"Hit my first flip reset musty in a wager match. Opponent rage quit instantly lmao",time:"12:45 PM"},
+    {name:"AerialAce",color:"var(--purple)",text:"The Aerial Supremacy bracket is looking stacked. VoidWalker you're going down.",time:"1:15 PM"},
+    {name:"VoidWalker",color:"var(--gold)",text:"@AerialAce bet. Put 1000 CR on it. Side wager. Let's make it interesting.",time:"1:18 PM"},
+    {name:"AerialAce",color:"var(--purple)",text:"Done. See you in bracket. Hope your PnL can handle the L.",time:"1:22 PM"},
+  ],
+  gow:[
+    {name:"RektByDesign",color:"var(--orange)",text:"Chainsaw Invitational is gonna be crazy. Only 8 spots and 6 are filled already.",time:"11:30 AM"},
+    {name:"ChainSawKing",color:"var(--pink)",text:"Lancer meta is back. If you're running gnasher only you're throwing.",time:"12:15 PM"},
+    {name:"RektByDesign",color:"var(--orange)",text:"Disagree. Gnasher movement is unmatched in 1v1 fights. Lancer is for zoning.",time:"12:20 PM"},
+    {name:"CDawg",color:"var(--green)",text:"Both of you are gonna lose to me in the invitational anyway 😤",time:"1:00 PM"},
+  ],
+  tekken:[
+    {name:"ZeroLatency",color:"var(--cyan)",text:"Tekken 8 ranked is destroying my soul but my ELO keeps climbing somehow.",time:"10:00 AM"},
+    {name:"NovaCrush",color:"var(--purple)",text:"Who's maining Reina? She's busted online but I never see her in tourneys.",time:"11:30 AM"},
+    {name:"ZeroLatency",color:"var(--cyan)",text:"I'm running Kazuya. EWGF consistency is the real tier list.",time:"11:35 AM"},
+    {name:"NovaCrush",color:"var(--purple)",text:"Respect. Iron Throne Invitational is gonna be a bloodbath. 24 players deep.",time:"2:00 PM"},
+  ],
+  sf6:[
+    {name:"NovaCrush",color:"var(--purple)",text:"Drive impact is STILL getting me in tournament. I need to break the habit.",time:"9:00 AM"},
+    {name:"PhantomEdge",color:"var(--cyan)",text:"Dragon Punch Royale BANGER requires 3000 VP to enter. I'm grinding to get there.",time:"1:45 PM"},
+    {name:"NovaCrush",color:"var(--purple)",text:"I just hit 2700 VP. 300 more and I'm in. Let's run some sets to farm VP.",time:"2:30 PM"},
+  ],
+  val:[
+    {name:"PhantomEdge",color:"var(--cyan)",text:"Phantom Protocol Cup is BO3 Swiss format. Map pool is gonna matter a lot.",time:"10:30 AM"},
+    {name:"KillSwitch99",color:"var(--pink)",text:"I'm swapping from CoD to Val for this one. The $4K pot is too good to pass up.",time:"11:00 AM"},
+    {name:"PhantomEdge",color:"var(--cyan)",text:"You're brave. Val requires actual teamwork though, not just aim 😂",time:"11:05 AM"},
+    {name:"KillSwitch99",color:"var(--pink)",text:"Pain. I'll find a stack. Anyone in here want to run the Protocol Cup together?",time:"11:10 AM"},
+  ],
+};
+
+const channelMeta={
+  general:{name:"# general",desc:"Platform-wide chat — talk strategy, flex wins, find opponents",online:47},
+  lfg:{name:"# looking-for-group",desc:"Find teammates and opponents for tournaments and wagers",online:12},
+  cod:{name:"# call-of-duty",desc:"Warzone, multiplayer, and CoD tournament discussion",online:31},
+  rl:{name:"# rocket-league",desc:"Aerials, rotations, and RL competitive talk",online:18},
+  gow:{name:"# gears-of-war",desc:"Gnasher fights, lancer plays, and Gears tournament chat",online:9},
+  tekken:{name:"# tekken-8",desc:"Combos, matchups, and Tekken tournament discussion",online:14},
+  sf6:{name:"# street-fighter-6",desc:"Drive system, ranked, and SF6 competitive play",online:8},
+  val:{name:"# valorant",desc:"Agent picks, strats, and Valorant tournament chat",online:22},
+};
+
+// Player profiles for hover popups
+const playerProfiles={
+  ZeroLatency:{name:"ZeroLatency",tag:"@zero",game:"Tekken 8",color:"var(--cyan)",w:47,l:12,earnings:4800,vp:3200,pnl:"+$1,240",pnlColor:"var(--green)",trophies:["🥇","⚔️","🔥","💰","🏆","💎","👑"]},
+  KillSwitch99:{name:"KillSwitch99",tag:"@ks99",game:"Call of Duty",color:"var(--pink)",w:41,l:15,earnings:4200,vp:2900,pnl:"+$980",pnlColor:"var(--green)",trophies:["🥇","⚔️","🔥","💰","🏆"]},
+  NovaCrush:{name:"NovaCrush",tag:"@nova",game:"GG Strive",color:"var(--purple)",w:38,l:9,earnings:3600,vp:2700,pnl:"+$1,100",pnlColor:"var(--green)",trophies:["🥇","⚔️","🔥","💰","🏆","💎"]},
+  VoidWalker:{name:"VoidWalker",tag:"@void",game:"Rocket League",color:"var(--gold)",w:35,l:14,earnings:3100,vp:2400,pnl:"+$720",pnlColor:"var(--green)",trophies:["🥇","⚔️","💰","🏆"]},
+  CDawg:{name:"CDawg",tag:"@cdawg",game:"Call of Duty",color:"var(--green)",w:47,l:18,earnings:2412,vp:1850,pnl:"+$812",pnlColor:"var(--green)",trophies:["🥇","⚔️","🔥","💰","🏆","💎"]},
+  RektByDesign:{name:"RektByDesign",tag:"@rekt",game:"Gears of War",color:"var(--orange)",w:29,l:11,earnings:2100,vp:1600,pnl:"+$440",pnlColor:"var(--green)",trophies:["🥇","⚔️","💰"]},
+  PhantomEdge:{name:"PhantomEdge",tag:"@phantom",game:"Valorant",color:"var(--cyan)",w:26,l:10,earnings:1900,vp:1400,pnl:"+$360",pnlColor:"var(--green)",trophies:["🥇","⚔️","💰","🏆"]},
+  ChainSawKing:{name:"ChainSawKing",tag:"@chainsaw",game:"Gears of War",color:"var(--pink)",w:22,l:8,earnings:1700,vp:1200,pnl:"+$280",pnlColor:"var(--green)",trophies:["🥇","⚔️","💰"]},
+  AerialAce:{name:"AerialAce",tag:"@aerial",game:"Rocket League",color:"var(--purple)",w:20,l:12,earnings:1400,vp:1100,pnl:"-$120",pnlColor:"var(--red)",trophies:["🥇","⚔️"]},
+  GhostRider:{name:"GhostRider",tag:"@ghost",game:"Call of Duty",color:"var(--gold)",w:18,l:9,earnings:1200,vp:900,pnl:"+$200",pnlColor:"var(--green)",trophies:["🥇","⚔️"]},
+};
+
+let currentChannel='general';
+
+// ═══ FULL GAME CATALOG ═══
+const gameCategories={
+  "Call of Duty":[
+    {name:"Call of Duty: Black Ops 7",platform:"Cross-Platform"},
+    {name:"Call of Duty: Black Ops 7 Zombies",platform:"Cross-Platform"},
+    {name:"Call of Duty: Warzone Black Ops Royale",platform:"Cross-Platform"},
+    {name:"Call of Duty: Black Ops 6",platform:"Cross-Platform"},
+    {name:"Call of Duty: Black Ops 6 Zombies",platform:"Cross-Platform"},
+    {name:"Call of Duty: Modern Warfare 3",platform:"Cross-Platform"},
+    {name:"Call of Duty: Modern Warfare 2",platform:"Cross-Platform"},
+    {name:"Call of Duty: Modern Warfare",platform:"PC"},
+    {name:"Call of Duty: Modern Warfare Remastered",platform:"Cross-Platform"},
+    {name:"Call of Duty: Modern Warfare 3 (2011)",platform:"PC"},
+    {name:"Call of Duty: Modern Warfare 2 (2009)",platform:"XBOX ONE"},
+    {name:"Call of Duty: Black Ops Cold War",platform:"Cross-Platform"},
+    {name:"Call of Duty: Black Ops Cold War Zombies",platform:"Cross-Platform"},
+    {name:"Call of Duty: Vanguard",platform:"PS4 / XBOX ONE"},
+    {name:"Call of Duty: WWII",platform:"PS4 / XBOX ONE"},
+    {name:"Call of Duty: Black Ops 4",platform:"PS4 / XBOX ONE / PC"},
+    {name:"Call of Duty: Black Ops III",platform:"PS4 / XBOX ONE"},
+    {name:"Call of Duty: Black Ops II",platform:"PC"},
+    {name:"Call of Duty: Black Ops",platform:"PC"},
+    {name:"Call of Duty: Ghosts",platform:"Cross-Platform"},
+    {name:"Call of Duty: Infinite Warfare",platform:"PS4 / XBOX ONE"},
+    {name:"Call of Duty: Advanced Warfare",platform:"PS4 / XBOX ONE"},
+    {name:"Call of Duty: Blackout",platform:"PC / XBOX ONE / PS4"},
+    {name:"Call of Duty: Warzone Mobile",platform:"Mobile"},
+  ],
+  "Battle Royale":[
+    {name:"Fortnite: Battle Royale",platform:"Cross-Platform"},
+    {name:"Apex Legends",platform:"Cross-Platform"},
+    {name:"Fall Guys: Ultimate Knockout",platform:"Cross-Platform"},
+  ],
+  "Sports":[
+    {name:"Rocket League",platform:"PC / PS4 / XB1"},
+    {name:"Madden 26",platform:"Cross-Platform"},
+    {name:"NBA 2K26",platform:"Cross-Platform"},
+    {name:"NBA 2K24",platform:"Cross-Platform"},
+    {name:"MLB The Show 26",platform:"Cross-Platform"},
+    {name:"FC 26",platform:"Cross-Platform"},
+    {name:"College Football 26",platform:"Cross-Platform"},
+  ],
+  "Tactical Shooters":[
+    {name:"Valorant",platform:"PC"},
+    {name:"Battlefield 6: Redsec",platform:"Cross-Platform"},
+    {name:"Halo Infinite",platform:"Cross-Platform"},
+    {name:"Rogue Company",platform:"Cross-Platform"},
+    {name:"Gears 5",platform:"XBOX ONE"},
+  ],
+  "Other":[
+    {name:"Marvel Rivals",platform:"Cross-Platform"},
+    {name:"League of Legends",platform:"PC"},
+    {name:"Clash Royale",platform:"Mobile"},
+    {name:"Penguin Paradise",platform:"PC"},
+  ],
+};
+
+const allGames=Object.values(gameCategories).flat();
+
+// ═══ NEWS DATA ═══
+const newsCategories=["All","Call of Duty","Battle Royale","Sports","Tactical Shooters","Rocket League","Valorant","Fortnite","Platform Updates"];
+const newsArticles=[
+  {id:1,cat:"Call of Duty",game:"Call of Duty: Black Ops 7",type:"Tournament",icon:"🎮",featured:true,
+    title:"$10K BANGER: Last Man Standing Announced — 8 Players, Winner Takes All",
+    excerpt:"VictoryPoint's biggest event yet drops May 17. BO5 elimination, 5,000 VP entry requirement, $10,000 prize pool. Only 8 slots. Applications open April 15.",
+    author:"VP Staff",date:"Mar 29, 2026",tags:["BANGER","Tournament","BO7"]},
+  {id:2,cat:"Call of Duty",game:"Call of Duty: Black Ops 7",type:"Meta",icon:"🔫",featured:false,
+    title:"Black Ops 7 Season 3 Meta Shakeup: RAM-9 Nerfed, MCW Rises",
+    excerpt:"The latest patch completely shifts the competitive loadout landscape. Here's what the top VP players are running heading into the Warzone Wipeout Classic.",
+    author:"CDawg",date:"Mar 28, 2026",tags:["Meta","BO7","Loadouts"]},
+  {id:3,cat:"Rocket League",game:"Rocket League",type:"Drama",icon:"🚀",featured:false,
+    title:"VoidWalker vs AerialAce Rivalry Escalates — 1,000 CR Side Wager Set for Aerial Supremacy",
+    excerpt:"What started as bracket talk turned into a public callout. Both players have agreed to a side wager on top of the tournament entry. Community is picking sides.",
+    author:"VP Staff",date:"Mar 28, 2026",tags:["Drama","Rivalry","Wager"]},
+  {id:4,cat:"Platform Updates",game:"VictoryPoint",type:"Update",icon:"⚡",featured:false,
+    title:"VP System Update: Streak Bonuses Doubled Through April",
+    excerpt:"3-win streaks now award 100 VP instead of 50. 5-win streaks grant 250 VP. Grind into BANGER territory faster during the Season 01 push.",
+    author:"VP Staff",date:"Mar 27, 2026",tags:["VP","Update","Season 01"]},
+  {id:5,cat:"Battle Royale",game:"Fortnite: Battle Royale",type:"Tournament",icon:"🏗️",featured:false,
+    title:"Fortnite Build Mode Returns to VP: First Tournament Drops April 8",
+    excerpt:"After months of community requests, VictoryPoint is launching its first Fortnite bracket. Build mode only, 32-player single elimination, 1,500 CR entry.",
+    author:"VP Staff",date:"Mar 27, 2026",tags:["Fortnite","New Game","Tournament"]},
+  {id:6,cat:"Tactical Shooters",game:"Valorant",type:"Roster",icon:"🎯",featured:false,
+    title:"PhantomEdge Drops from CoD to Valorant Full-Time — Targets Phantom Protocol Cup",
+    excerpt:"One of VP's top Call of Duty competitors is making the switch. 'The $4K pot and the competition quality on VP is too good to ignore,' says PhantomEdge.",
+    author:"VP Staff",date:"Mar 26, 2026",tags:["Valorant","Roster Move","Interview"]},
+  {id:7,cat:"Call of Duty",game:"Call of Duty: Black Ops 7",type:"Results",icon:"🏆",featured:false,
+    title:"Warzone Wipeout #12 Results: CDawg Takes 4th, KillSwitch99 Dominates",
+    excerpt:"32-player bracket saw KillSwitch99 go undefeated through winners side. CDawg's 4th place finish nets $120 profit on 500 CR entry. Full bracket breakdown inside.",
+    author:"VP Staff",date:"Mar 26, 2026",tags:["Results","Warzone","Bracket"]},
+  {id:8,cat:"Sports",game:"Madden 26",type:"Announcement",icon:"🏈",featured:false,
+    title:"Madden 26 Joins the VP Roster — First Wager Matches Now Live",
+    excerpt:"EA's latest drops on VictoryPoint with 1v1 wager support from day one. Tournaments planned for May. H2H rules with standard competitive settings.",
+    author:"VP Staff",date:"Mar 25, 2026",tags:["Madden","New Game","Wagers"]},
+  {id:9,cat:"Call of Duty",game:"Call of Duty: Warzone Black Ops Royale",type:"Blog",icon:"📝",featured:false,
+    title:"How I Turned $200 in Credits into $1,200 in 30 Days — A VP PnL Breakdown",
+    excerpt:"CDawg breaks down his month on VictoryPoint: tournament selection strategy, wager match bankroll management, and why tracking PnL changed his approach.",
+    author:"CDawg",date:"Mar 24, 2026",tags:["Blog","PnL","Strategy"]},
+  {id:10,cat:"Sports",game:"NBA 2K26",type:"Tournament",icon:"🏀",featured:false,
+    title:"NBA 2K26 Pro-Am Tournament: 16 Teams, $3,000 Prize Pool",
+    excerpt:"VictoryPoint's first team-based sports tournament. 5v5 Pro-Am format, double elimination. Registration opens April 1.",
+    author:"VP Staff",date:"Mar 23, 2026",tags:["2K","Teams","Tournament"]},
+  {id:11,cat:"Battle Royale",game:"Apex Legends",type:"Tournament",icon:"🦅",featured:false,
+    title:"Apex Legends Ranked Invitational: Top 20 VP Players Get Priority Entry",
+    excerpt:"The first VP-exclusive Apex event rewards platform loyalty. Players with 1,500+ VP automatically qualify. Remaining 12 spots open to all.",
+    author:"VP Staff",date:"Mar 22, 2026",tags:["Apex","Invitational","VP-Gated"]},
+  {id:12,cat:"Tactical Shooters",game:"Battlefield 6: Redsec",type:"Announcement",icon:"💥",featured:false,
+    title:"Battlefield 6: Redsec Competitive Mode Confirmed — VP Events Planned for Launch",
+    excerpt:"DICE's new competitive mode is tailor-made for tournament play. VictoryPoint will be among the first platforms to host ranked BF6 brackets.",
+    author:"VP Staff",date:"Mar 21, 2026",tags:["Battlefield","New Game","Competitive"]},
+];
+
+function renderNewsCard(a,featured){
+  return `<div class="news-card ${featured?'featured':''} clip-sm" data-cat="${a.cat}">
+    <div class="news-thumb" style="${featured?'':'min-height:120px'}">
+      ${a.icon}
+      <div class="news-cat-badge" style="color:var(--cyan)">${a.type.toUpperCase()}</div>
+    </div>
+    <div class="news-body">
+      <div class="news-game-tag">${a.game}</div>
+      <h3>${a.title}</h3>
+      <div class="news-excerpt">${a.excerpt}</div>
+      <div class="news-meta">
+        <span>${a.author}</span>
+        <span>·</span>
+        <span>${a.date}</span>
+        ${a.tags.map(t=>`<span class="news-tag">${t}</span>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderNewsFeed(cat){
+  const sidebar=document.getElementById('newsSidebar');
+  const counts={};
+  newsArticles.forEach(a=>{counts[a.cat]=(counts[a.cat]||0)+1});
+  sidebar.innerHTML=newsCategories.map(c=>{
+    const cnt=c==='All'?newsArticles.length:(counts[c]||0);
+    return `<div class="news-cat ${cat===c?'active':''}" onclick="filterNews('${c}',this)">${c} <span class="cat-count">${cnt}</span></div>`;
+  }).join('');
+
+  const filtered=cat==='All'?newsArticles:newsArticles.filter(a=>a.cat===cat);
+  const feed=document.getElementById('newsFeed');
+  if(filtered.length===0){feed.innerHTML=`<div style="text-align:center;padding:60px 0;color:var(--dim)">No articles in this category yet.</div>`;return}
+  feed.innerHTML=filtered.map((a,i)=>renderNewsCard(a,i===0&&cat==='All')).join('');
+}
+
+function filterNews(cat,el){
+  document.querySelectorAll('.news-cat').forEach(c=>c.classList.remove('active'));
+  if(el)el.classList.add('active');
+  renderNewsFeed(cat);
+}
+
+// ═══ RENDER FUNCTIONS ═══
+function renderTCard(t){
+  const pct=t.max>0?(t.entrants/t.max*100):0;
+  const sc=t.status==='live'?'badge-live':t.status==='open'?'badge-open':t.status==='filled'?'badge-filled':'badge-upcoming';
+  const sl=t.status==='live'?'● LIVE':t.status==='open'?'OPEN':t.status==='filled'?'FILLED':'UPCOMING';
+  const bc=pct>75?'bar-hot':'bar-warm';
+  return `<div class="t-card clip-sm" data-status="${t.status}" data-game="${t.game}" onclick="openModal('signup')">
+    <div class="t-glow"></div>
+    <div class="t-banner">
+      <div class="game-label"><span class="emoji">${t.icon}</span>${t.game}</div>
+      <div style="display:flex;gap:6px;align-items:center">
+        ${t.banger?'<span class="t-badge badge-banger">🔥 BANGER</span>':''}
+        <span class="t-badge ${sc}">${sl}</span>
+      </div>
+    </div>
+    <div class="t-body">
+      <div class="t-title">${t.title}</div>
+      <div class="t-meta">
+        <div class="t-meta-i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${t.date}</div>
+        <div class="t-meta-i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${t.format}</div>
+        <div class="t-meta-i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>${t.region}</div>
+      </div>
+      <div class="t-bottom">
+        <div class="t-prize"><span class="amt">$${t.prize.toLocaleString()}</span><span class="fee">${t.buyIn.toLocaleString()} CR Entry</span></div>
+        <div class="t-slots">
+          ${t.status!=='upcoming'?`<div class="bar"><div class="bar-fill ${bc}" style="width:${pct}%"></div></div><div class="info">${t.entrants}/${t.max} ${t.status==='filled'?'SEALED':Math.round(pct)+'%'}</div>`:`<div class="info">${t.max} Slots · Opens Soon</div>`}
+        </div>
+      </div>
+      ${t.banger?`<div class="t-vp-req"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg> Requires ${t.vpReq.toLocaleString()} VP to enter</div>`:''}
+    </div>
+  </div>`;
+}
+
+function renderWager(w){
+  const sc=w.status==='live'?'badge-live':w.status==='open'?'badge-open':'badge-upcoming';
+  const sl=w.status==='live'?'● LIVE':w.status==='open'?'OPEN':'MATCHED';
+  return `<div class="wager-card clip-sm">
+    <div class="wager-top"><div class="wager-game">${w.game}</div><div class="wager-type">${w.type} · <span class="t-badge ${sc}" style="display:inline">${sl}</span></div></div>
+    <div class="wager-players">
+      <div class="wager-player"><div class="avatar" style="background:${w.p1.color}22;color:${w.p1.color}">${w.p1.name[0]}</div><div class="name">${w.p1.name}</div><div class="elo">ELO: ${w.p1.elo}</div></div>
+      <div class="wager-vs">VS</div>
+      <div class="wager-player"><div class="avatar" style="background:${w.p2.color}22;color:${w.p2.color}">${w.p2.name[0]}</div><div class="name">${w.p2.name}</div><div class="elo">${w.p2.elo==='—'?'Awaiting':('ELO: '+w.p2.elo)}</div></div>
+    </div>
+    <div class="wager-stakes"><div class="credits">${w.credits.toLocaleString()} CR</div><div class="lbl">each · ${(w.credits*2).toLocaleString()} CR pot</div></div>
+  </div>`;
+}
+
+function renderLbRow(p,i){
+  const wr=Math.round(p.w/(p.w+p.l)*100);
+  const rc=i===0?'top1':i===1?'top2':i===2?'top3':'';
+  return `<div class="lb-row">
+    <div class="lb-rank ${rc}">${i+1}</div>
+    <div class="lb-player"><div class="lb-avatar" style="background:${p.color}22;color:${p.color}">${p.name[0]}</div><div><div class="lb-name">${p.name}</div><div class="lb-sub">${p.tag} · ${p.game}</div></div></div>
+    <div class="lb-val lb-earnings">$${p.earnings.toLocaleString()}</div>
+    <div class="lb-val lb-vp">${p.vp.toLocaleString()}</div>
+    <div class="lb-val">${p.w}/${p.l}</div>
+    <div class="lb-val lb-wr">${wr}%</div>
+  </div>`;
+}
+
+function renderProfileSm(p,i){
+  return `<div class="profile-card-sm clip-sm">
+    <div class="top"><div class="av" style="background:${p.color}22;color:${p.color}">${p.name[0]}<span class="rnk">#${i+1}</span></div><div><div class="nm">${p.name}</div><span class="tg">${p.tag} · ${p.game}</span></div></div>
+    <div class="stats">
+      <div><div class="st-v" style="color:var(--green)">${p.w}</div><div class="st-l">Wins</div></div>
+      <div><div class="st-v" style="color:var(--pink)">${p.l}</div><div class="st-l">Losses</div></div>
+      <div><div class="st-v" style="color:var(--gold)">$${(p.earnings/1000).toFixed(1)}K</div><div class="st-l">Earned</div></div>
+    </div>
+  </div>`;
+}
+
+function renderMatchHistory(){
+  return `<div style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-family:var(--font-d);font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:1px">Recent Matches</span>
+    <span style="font-family:var(--font-m);font-size:.7rem;color:var(--dim)">Last 8 matches</span>
+  </div>
+  <div class="match-row" style="font-family:var(--font-m);font-size:.68rem;color:var(--muted);border-bottom:1px solid var(--border2)"><div>Result</div><div>Event</div><div>Opponent</div><div>P&L</div><div>Date</div></div>
+  ${matchHistory.map(m=>`<div class="match-row">
+    <div class="match-result ${m.result}">${m.result.toUpperCase()}</div>
+    <div><div style="font-family:var(--font-d);font-size:.85rem;font-weight:500">${m.event}</div><div class="match-game">${m.game}</div></div>
+    <div class="match-opponent">vs ${m.opp}</div>
+    <div class="match-pnl ${m.pnl.startsWith('+')?'pos':'neg'}">${m.pnl}</div>
+    <div class="match-date">${m.date}</div>
+  </div>`).join('')}`;
+}
+
+function renderActiveEvents(){
+  const active=tournaments.filter(t=>t.status==='live'||t.status==='open').slice(0,3);
+  return `<div style="margin-bottom:16px;font-family:var(--font-d);font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:1px">Your Active Tournaments</div>
+  ${active.map(t=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--border)">
+    <div><div style="font-family:var(--font-d);font-size:.95rem;font-weight:600">${t.title}</div><div style="font-family:var(--font-m);font-size:.7rem;color:var(--dim)">${t.game} · ${t.format}</div></div>
+    <div style="text-align:right"><div style="font-family:var(--font-d);font-size:1.1rem;font-weight:700;color:var(--gold)">$${t.prize.toLocaleString()}</div><span class="t-badge ${t.status==='live'?'badge-live':'badge-open'}">${t.status==='live'?'● LIVE':'REGISTERED'}</span></div>
+  </div>`).join('')}`;
+}
+
+function renderMatchReport(){
+  return `<div style="margin-bottom:16px;font-family:var(--font-d);font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:1px">Report Match Result</div>
+  <p style="font-size:.85rem;color:var(--dim);margin-bottom:24px">Both players must submit matching results. Mismatches trigger auto-dispute.</p>
+  <div class="fg"><label>Tournament / Match</label><select style="width:100%;padding:10px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--font-b)"><option>Warzone Wipeout Classic — Round 3</option><option>Wager Match vs GhostRider</option><option>Daily Grind #47 — Semifinal</option></select></div>
+  <div class="fg-row">
+    <div class="fg"><label>Your Score</label><input type="number" placeholder="0" style="width:100%;padding:10px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--font-b)"></div>
+    <div class="fg"><label>Opponent Score</label><input type="number" placeholder="0" style="width:100%;padding:10px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--font-b)"></div>
+  </div>
+  <div class="fg"><label>Screenshot / Proof (URL)</label><input type="text" placeholder="Link to screenshot or clip" style="width:100%;padding:10px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--font-b)"></div>
+  <div class="fg"><label>Notes</label><input type="text" placeholder="Optional — add context" style="width:100%;padding:10px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--font-b)"></div>
+  <div style="display:flex;gap:12px;margin-top:8px">
+    <button class="btn-p clip" style="flex:1">Submit Result</button>
+    <button class="btn-s clip" style="flex:1">Open Dispute</button>
+  </div>`;
+}
+
+// ═══ INIT ═══
+function init(){
+  document.getElementById('feat-t').innerHTML=tournaments.slice(0,4).map(renderTCard).join('');
+  document.getElementById('all-t').innerHTML=tournaments.map(renderTCard).join('');
+
+  // Filters
+  const games=[...new Set(tournaments.map(t=>t.game))];
+  document.getElementById('filterRow').innerHTML=
+    `<button class="f-btn active" onclick="filterT('all',this)">All</button>
+    <button class="f-btn" onclick="filterT('open',this)">Open</button>
+    <button class="f-btn" onclick="filterT('live',this)">Live</button>
+    <button class="f-btn" onclick="filterT('banger',this)">🔥 Bangers</button>
+    <button class="f-btn" onclick="filterT('upcoming',this)">Upcoming</button>`;
+
+  document.getElementById('wager-grid').innerHTML=wagers.map(renderWager).join('');
+  document.getElementById('lb-body').innerHTML=players.map((p,i)=>renderLbRow(p,i)).join('');
+
+  // Chat init
+  renderChannel('general');
+  renderUsersSidebar();
+
+  // Profile popup element
+  if(!document.getElementById('profilePopup')){
+    const pp=document.createElement('div');pp.id='profilePopup';pp.className='profile-popup';
+    document.body.appendChild(pp);
+  }
+
+  // PnL Chart
+  const pnlData=[20,-10,45,30,-25,60,15,-15,80,40,55,-20,35,70,25,50,90,-30,110,45,65,-10,40,80];
+  let cumulative=0;const cum=pnlData.map(v=>{cumulative+=v;return cumulative});
+  const max=Math.max(...cum);const min=Math.min(...cum,0);const range=max-min||1;
+  document.getElementById('pnlChart').innerHTML=cum.map(v=>{
+    const h=Math.max(4,((v-min)/range)*70);
+    return `<div class="pnl-bar" style="height:${h}px;background:${v>=0?'var(--green)':'var(--red)'}"></div>`;
+  }).join('');
+
+  // Dashboard
+  document.getElementById('dashContent').innerHTML=renderMatchHistory();
+
+  // Populate game selects
+  const gameOpts='<option value="">Select your main</option>'+allGames.map(g=>`<option>${g.name}</option>`).join('');
+  const gs=document.getElementById('gameSelect');if(gs)gs.innerHTML=gameOpts;
+  const wgs=document.getElementById('wagerGameSelect');if(wgs)wgs.innerHTML=allGames.map(g=>`<option>${g.name}</option>`).join('');
+
+  // News
+  renderNewsFeed('All');
+}
+
+// ═══ NAVIGATION ═══
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-links a[data-page]').forEach(a=>a.classList.toggle('active',a.dataset.page===page));
+  window.scrollTo({top:0,behavior:'smooth'});
+  // Close mobile menu
+  const nl=document.getElementById('navLinks');
+  if(window.innerWidth<=900)nl.style.display='none';
+}
+
+function filterT(f,btn){
+  document.querySelectorAll('#all-t .t-card').forEach(c=>{
+    if(f==='all')c.style.display='';
+    else if(f==='banger')c.style.display=c.querySelector('.badge-banger')?'':'none';
+    else c.style.display=c.dataset.status===f?'':'none';
+  });
+  document.querySelectorAll('#filterRow .f-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setLbFilter(type,btn){
+  const sorted=[...players];
+  if(type==='earnings')sorted.sort((a,b)=>b.earnings-a.earnings);
+  else if(type==='vp')sorted.sort((a,b)=>b.vp-a.vp);
+  else sorted.sort((a,b)=>(b.w/(b.w+b.l))-(a.w/(a.w+a.l)));
+  document.getElementById('lb-body').innerHTML=sorted.map((p,i)=>renderLbRow(p,i)).join('');
+  document.querySelectorAll('.filter-row .f-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setDashTab(tab,btn){
+  document.querySelectorAll('.dash-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const dc=document.getElementById('dashContent');
+  if(tab==='history')dc.innerHTML=renderMatchHistory();
+  else if(tab==='active')dc.innerHTML=renderActiveEvents();
+  else dc.innerHTML=renderMatchReport();
+}
+
+// ═══ MODALS ═══
+function openModal(id){const m=document.getElementById('modal-'+id);m.style.display='flex';requestAnimationFrame(()=>m.classList.add('show'))}
+function closeModal(id){const m=document.getElementById('modal-'+id);m.classList.remove('show');setTimeout(()=>m.style.display='none',300)}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',function(e){if(e.target===this){const id=this.id.replace('modal-','');closeModal(id)}}));
+
+// ═══ CHAT ═══
+function renderChatMsg(m){
+  return `<div class="chat-msg">
+    <div class="chat-av" style="background:${m.color}22;color:${m.color}" onmouseenter="showProfilePopup('${m.name}',event)" onmouseleave="hideProfilePopup()">${m.name[0]}</div>
+    <div class="chat-bubble">
+      <div class="chat-nm" style="color:${m.color}" onmouseenter="showProfilePopup('${m.name}',event)" onmouseleave="hideProfilePopup()">${m.name}</div>
+      <div class="chat-txt">${m.text}</div>
+      <div class="chat-tm">${m.time}</div>
+    </div>
+  </div>`;
+}
+
+function renderChannel(ch){
+  currentChannel=ch;
+  const meta=channelMeta[ch];
+  const msgs=channelMessages[ch]||[];
+  document.getElementById('chatChannelName').textContent=meta.name;
+  document.getElementById('chatChannelDesc').textContent=meta.desc;
+  document.getElementById('chatOnlineCount').textContent=meta.online;
+  document.getElementById('chatMsgs').innerHTML=msgs.map(renderChatMsg).join('');
+  document.getElementById('chatInput').placeholder=`Message ${meta.name}...`;
+  // Scroll to bottom
+  const container=document.getElementById('chatMsgs');
+  container.scrollTop=container.scrollHeight;
+}
+
+function switchChannel(ch){
+  document.querySelectorAll('.channel-item').forEach(c=>c.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  renderChannel(ch);
+}
+
+function renderUsersSidebar(){
+  const onlineUsers=Object.values(playerProfiles);
+  const statuses=['online','online','online','online','online','idle','idle','online','online','dnd'];
+  document.getElementById('usersOnlineCount').textContent=onlineUsers.length;
+  document.getElementById('usersList').innerHTML=onlineUsers.map((u,i)=>`
+    <div class="user-item" onmouseenter="showProfilePopup('${u.name}',event)" onmouseleave="hideProfilePopup()">
+      <div class="u-dot ${statuses[i]||'online'}"></div>
+      <div>
+        <div class="u-name">${u.name}</div>
+        <div class="u-game">${u.game}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function showProfilePopup(name,e){
+  const p=playerProfiles[name];if(!p)return;
+  const popup=document.getElementById('profilePopup');
+  const wr=Math.round(p.w/(p.w+p.l)*100);
+  popup.innerHTML=`
+    <div class="pp-banner" style="background:linear-gradient(135deg,${p.color}22,rgba(168,85,247,.1))"></div>
+    <div class="pp-avatar" style="background:${p.color}33;color:${p.color}">${p.name[0]}</div>
+    <div class="pp-body">
+      <div class="pp-name">${p.name}</div>
+      <div class="pp-tag">${p.tag}</div>
+      <div class="pp-game">${p.game}</div>
+      <div class="pp-stats">
+        <div class="pp-stat"><div class="v" style="color:var(--green)">${p.w}</div><div class="l">Wins</div></div>
+        <div class="pp-stat"><div class="v" style="color:var(--pink)">${p.l}</div><div class="l">Losses</div></div>
+        <div class="pp-stat"><div class="v" style="color:var(--cyan)">${wr}%</div><div class="l">WR</div></div>
+        <div class="pp-stat"><div class="v" style="color:var(--cyan)">${p.vp.toLocaleString()}</div><div class="l">VP</div></div>
+      </div>
+      <div class="pp-pnl">
+        <div class="pp-pnl-label">Net PnL</div>
+        <div class="pp-pnl-val" style="color:${p.pnlColor}">${p.pnl}</div>
+      </div>
+      <div class="pp-trophies">${p.trophies.map(t=>`<div class="pp-trophy">${t}</div>`).join('')}</div>
+    </div>`;
+  // Position popup
+  const rect=e.target.getBoundingClientRect();
+  let left=rect.right+12;
+  let top=rect.top-40;
+  // Keep on screen
+  if(left+290>window.innerWidth){left=rect.left-290}
+  if(top+300>window.innerHeight){top=window.innerHeight-310}
+  if(top<10)top=10;
+  popup.style.left=left+'px';
+  popup.style.top=top+'px';
+  popup.classList.add('visible');
+}
+
+function hideProfilePopup(){
+  document.getElementById('profilePopup').classList.remove('visible');
+}
+
+function sendChat(){
+  const input=document.getElementById('chatInput');const text=input.value.trim();if(!text)return;
+  const msgs=document.getElementById('chatMsgs');
+  const time=new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+  const msg={name:"You",color:"var(--green)",text:text.replace(/</g,'&lt;'),time:time};
+  // Add to current channel data
+  if(!channelMessages[currentChannel])channelMessages[currentChannel]=[];
+  channelMessages[currentChannel].push({name:"CDawg",color:"var(--green)",text:text,time:time});
+  msgs.innerHTML+=renderChatMsg({name:"CDawg",color:"var(--green)",text:text.replace(/</g,'&lt;'),time:time});
+  input.value='';msgs.scrollTop=msgs.scrollHeight;
+}
+
+// ═══ MOBILE ═══
+function toggleMobile(){
+  const nl=document.getElementById('navLinks');
+  if(nl.style.display==='flex'){nl.style.display='none';return}
+  nl.style.display='flex';nl.style.flexDirection='column';nl.style.position='absolute';
+  nl.style.top='60px';nl.style.left='0';nl.style.right='0';nl.style.background='rgba(8,8,12,.97)';
+  nl.style.padding='20px 24px';nl.style.gap='16px';nl.style.borderBottom='1px solid var(--border)';
+}
+
+init();
+</script>
+</body>
+</html>
